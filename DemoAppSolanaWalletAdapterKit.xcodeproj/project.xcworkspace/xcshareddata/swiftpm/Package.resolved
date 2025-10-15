@@ -1,13 +1,13 @@
 {
-  "originHash" : "d2fe161659483644935d604435eec15174b8079ccfc68d743b55146e720dbf61",
+  "originHash" : "6770c248c7e9764f099668f8501a7a484fb06560541ea794b90a682eb8723fa5",
   "pins" : [
     {
-      "identity" : "web3-core.swift",
+      "identity" : "solanakit.swift",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/The-SolShare-Team/web3-core.swift",
+      "location" : "https://github.com/The-SolShare-Team/SolanaKit.swift",
       "state" : {
-        "revision" : "11150d26d04d904a2f763e0c6af09945eb06db67",
-        "version" : "0.3.1"
+        "revision" : "0edfdb6701cb785557fc909b4e4ccb9497307942",
+        "version" : "0.0.4"
       }
     }
   ],

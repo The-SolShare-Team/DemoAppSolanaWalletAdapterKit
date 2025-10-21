@@ -1,5 +1,5 @@
 {
-  "originHash" : "6770c248c7e9764f099668f8501a7a484fb06560541ea794b90a682eb8723fa5",
+  "originHash" : "c8f356a4219b0208dfe1b05617c54d7c607ac7c044bed8ae0681672c42c2e182",
   "pins" : [
     {
       "identity" : "solanakit.swift",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "0edfdb6701cb785557fc909b4e4ccb9497307942",
         "version" : "0.0.4"
+      }
+    },
+    {
+      "identity" : "tweetnacl-swiftwrap",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/bitmark-inc/tweetnacl-swiftwrap",
+      "state" : {
+        "revision" : "f8fd111642bf2336b11ef9ea828510693106e954",
+        "version" : "1.1.0"
       }
     }
   ],

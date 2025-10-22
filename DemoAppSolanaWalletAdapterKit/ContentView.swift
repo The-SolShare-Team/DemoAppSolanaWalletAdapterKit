@@ -16,8 +16,11 @@ struct ContentView: View {
     //this will have the wallet id
     //not sure if it is called an id or a public key,
     // rename variable if necessary
+    
+    @EnvironmentObject var pathManager: NavigationPathManager
+    
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $pathManager.path){
             VStack{
                 Button(action: toggleWalletConfig){
                             Text(buttonText)

@@ -41,6 +41,7 @@ struct WalletRow: View {
 struct WalletSelectionView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var walletId: String?
+    @EnvironmentObject var pathManager: NavigationPathManager
     // Temporary hardcoded wallets for now
     let wallets = [
         ("Phantom", "wallet.pass"),
@@ -53,23 +54,24 @@ struct WalletSelectionView: View {
         VStack {
             Text("Connect to a Wallet:")
                 .connectTextStyle()
-            VStack(spacing: 15){
-                ForEach(wallets, id: \.0) {wallet in
-                    WalletRow(
-                        walletName: wallet.0,
-                        walletIcon: wallet.1,
-                        onConnect: {
-                            handleWalletConnection(wallet.0)
-                        }
-                    )
+                VStack(spacing: 15){
+                    ForEach(wallets, id: \.0) {wallet in
+                            WalletRow(
+                                walletName: wallet.0,
+                                walletIcon: wallet.1,
+                                onConnect: {
+                                    handleWalletConnection(wallet.0)
+                                }
+                            )
+                    }
                 }
-            }
-            .padding()
+                .padding()
+            
         }.blackScreenStyle()
     }
     private func handleWalletConnection(_ walletName: String) {
             print("Connecting to: \(walletName)")
-            // TODO: Call wallet.connect() here
+            // TODO: Call wallet.connect() here, add a loading thing to navigation stack
             walletId = walletName
             dismiss()
     }

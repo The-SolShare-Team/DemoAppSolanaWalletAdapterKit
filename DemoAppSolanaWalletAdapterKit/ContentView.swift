@@ -16,7 +16,7 @@ struct ContentView: View {
     @State private var showingWalletSelection: Bool = false
     
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $pathManager.path){
             VStack{
                 Button("Pair Wallets") {
                     showingWalletSelection = true

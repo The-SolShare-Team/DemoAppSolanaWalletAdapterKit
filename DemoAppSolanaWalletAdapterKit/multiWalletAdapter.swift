@@ -13,7 +13,8 @@ import CryptoKit
 
 // note that all this works because swift classes are reference type, do NOT do this with structs
 
-// tomorrow, wrap each provider function for easier calling, make a cluster datatype and jsondecode in the wallet function maybe
+// each provider function is wrapped for convenient calling
+// should probably include this as an example implementation in docs
 
 class MultiWalletAdapter: ObservableObject {
     @Published var storedWallets: [String: Wallet?]
@@ -60,10 +61,41 @@ class MultiWalletAdapter: ObservableObject {
     
     // wrappers for active wallet's provider functions for easier calling and auto passing of certain parameters (namely redirect link)
     
+    
+    
     func connect(cluster: String?) async throws {
         let connectionUrl = try await activeWallet?.connect(appUrl: demoAppMetadataUrl, redirectLink: "\(redirectProtocol)connected", cluster: cluster)
-        UIApplication.shared.open(connectionUrl!)
-        
+        await UIApplication.shared.open(connectionUrl!)
     }
+    
+    func disconnect() async throws {
+        let disconnectUrl = try await activeWallet?.disconnect(redirectLink: "\(redirectProtocol)disconnected")
+        await UIApplication.shared.open(disconnectUrl!)
+    }
+    
+    func signAndSendTransaction(transaction: Data, sendOptions: SendOptions?) async throws {
+        let signAndSendTransUrl = try await activeWallet?.signAndSendTransaction(redirectLink: "\(redirectProtocol)signAndSendTransaction", transaction: transaction, sendOptions: sendOptions)
+        await UIApplication.shared.open(signAndSendTransUrl!)
+    }
+    
+    func signAllTransactions(transactions: [Data]) async throws {
+        let signAllUrl = try await activeWallet?.signAndSendTransaction(redirectLink: "\(redirectProtocol)signAllTransactions", transactions: transactions)
+        await UIApplication.shared.open(signAllUrl!)
+    }
+    
+    func signTransaction(transaction: Data) async throws {
+        let signTransUrl = try await activeWallet?.signTransaction(redirectLink: "\(redirectProtocol)signTransaction", transaction: transaction)
+        await UIApplication.shared.open(signTransUrl!)
+    }
+    func signMessage(message: String, encodingFormat: EncodingFormat?) async throws {
+        let signMessageUrl = try await activeWallet?.signMessage(redirectLink: "\(redirectProtocol)signMessage", message: message, encodingFormat: encodingFormat)
+        await UIApplication.shared.open(signMessageUrl!)
+    }
+    
+    func browse(url: String, ref: String) async throws {
+        let browseUrl = try await activeWallet?.browse(url: url, ref: ref)
+        await UIApplication.shared.open(browseUrl!)
+    }
+    
     
 }

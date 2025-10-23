@@ -11,6 +11,7 @@
 // these are the swift components for that view
 
 import SwiftUI
+import SolanaWalletAdapterKit
 
 // each row has the following layout
 // {icon} walletName  <- spacer -> DETECTED
@@ -42,6 +43,7 @@ struct WalletSelectionView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var walletId: String?
     @EnvironmentObject var pathManager: NavigationPathManager
+    @EnvironmentObject var mwAdapter: MultiWalletAdapter
     // Temporary hardcoded wallets for now
     let wallets = [
         ("Phantom", "wallet.pass"),
@@ -69,11 +71,14 @@ struct WalletSelectionView: View {
             
         }.blackScreenStyle()
     }
-    private func handleWalletConnection(_ walletName: String) {
-            print("Connecting to: \(walletName)")
-            // TODO: Call wallet.connect() here, add a loading thing to navigation stack
-            walletId = walletName
-            dismiss()
+    private func handleWalletConnection(_ walletName: String) async throws{
+        print("Connecting to: \(walletName)")
+        // TODO: Call wallet.connect() here, add a loading thing to navigation stack
+        
+        mwAdapter.createNewWallet(privateKey: nil, provider: WalletProvider.backpack)
+        
+        walletId = walletName
+        dismiss()
     }
 }
 

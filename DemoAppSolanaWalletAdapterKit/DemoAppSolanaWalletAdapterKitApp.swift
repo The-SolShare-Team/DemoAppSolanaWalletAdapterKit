@@ -11,10 +11,12 @@ import SwiftUI
 struct DemoAppSolanaWalletAdapterKitApp: App {
     
     @StateObject private var pathManager = NavigationPathManager()  // navigation stack path environment object
+    @StateObject private var mwAdapter = MultiWalletAdapter()
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(pathManager)
+                .environmentObject(mwAdapter)
         }
     }
 }

@@ -14,9 +14,22 @@
 		7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoAppSolanaWalletAdapterKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DCCD5CD52EA9B72E008E6E1F /* Exceptions for "DemoAppSolanaWalletAdapterKit" folder in "DemoAppSolanaWalletAdapterKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7DAF209D2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7DAF20A02E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DCCD5CD52EA9B72E008E6E1F /* Exceptions for "DemoAppSolanaWalletAdapterKit" folder in "DemoAppSolanaWalletAdapterKit" target */,
+			);
 			path = DemoAppSolanaWalletAdapterKit;
 			sourceTree = "<group>";
 		};
@@ -262,6 +275,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -293,6 +307,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

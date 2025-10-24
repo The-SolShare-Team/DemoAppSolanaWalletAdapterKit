@@ -14,7 +14,7 @@ import SwiftUI
 import SolanaWalletAdapterKit
 
 // each row has the following layout
-// {icon} walletName  <- spacer -> DETECTED
+// {icon} walletName  <- spacer -> 
 struct WalletRow: View {
     let walletName: String
     let walletIcon: String //icon name, reference assets folder

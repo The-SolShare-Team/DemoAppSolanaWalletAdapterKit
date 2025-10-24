@@ -16,6 +16,10 @@ import CryptoKit
 // each provider function is wrapped for convenient calling
 // should probably include this as an example implementation in docs
 
+// TODO: just realised this should not be in the demo app, but should be in the package itself
+
+// separate the UIapp calls and just do them directly in the demo app
+
 class MultiWalletAdapter: ObservableObject {
     @Published var storedWallets: [String: Wallet?]
     @Published var activeWallet: Wallet?
@@ -79,7 +83,7 @@ class MultiWalletAdapter: ObservableObject {
     }
     
     func signAllTransactions(transactions: [Data]) async throws {
-        let signAllUrl = try await activeWallet?.signAndSendTransaction(redirectLink: "\(redirectProtocol)signAllTransactions", transactions: transactions)
+        let signAllUrl = try await activeWallet?.signAllTransactions(redirectLink: "\(redirectProtocol)signAllTransactions", transactions: transactions)
         await UIApplication.shared.open(signAllUrl!)
     }
     
@@ -95,6 +99,26 @@ class MultiWalletAdapter: ObservableObject {
     func browse(url: String, ref: String) async throws {
         let browseUrl = try await activeWallet?.browse(url: url, ref: ref)
         await UIApplication.shared.open(browseUrl!)
+    }
+    
+    // Main deep link redirect handler, browse doesn't conform to this redirect deep link pipeline
+    
+    func handleRedirect(_ url: URL) async throws -> (any WalletResponse)? {
+        var walletResponse: (any WalletResponse)
+        switch url.host! {
+        case "connected":
+            walletResponse = try await (activeWallet?.handleConnectRedirect(url))!
+        case "disconnected":
+        case "signAndSendTransaction":
+        case "signAllTransactions":
+        case "signTransaction":
+        case "signMessage":
+        default:
+            print(url.host!) // should be browse
+            break;
+        }
+        return walletResponse
+        
     }
     
     

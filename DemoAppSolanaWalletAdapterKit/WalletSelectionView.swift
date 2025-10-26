@@ -43,7 +43,7 @@ struct WalletSelectionView: View {
     @Environment(\.dismiss) var dismiss
     @Binding var walletId: String?
     @EnvironmentObject var pathManager: NavigationPathManager
-    @EnvironmentObject var mwAdapter: MultiWalletAdapter
+    @EnvironmentObject var mwAdapter: MobileWalletAdapter
     // Temporary hardcoded wallets for now
     let wallets = [
         ("Phantom", "wallet.pass"),
@@ -71,14 +71,22 @@ struct WalletSelectionView: View {
             
         }.blackScreenStyle()
     }
-    private func handleWalletConnection(_ walletName: String) async throws{
+    private func handleWalletConnection(_ walletName: String){
         print("Connecting to: \(walletName)")
         // TODO: Call wallet.connect() here, add a loading thing to navigation stack
+        Task {
+            do {
+                if mwAdapter.storedWallets[walletName] == nil{
+                    mwAdapter.createNewWallet(privateKey: nil, provider: WalletProvider(input: walletName)!)
+                }
+                walletId = walletName
+                try await mwAdapter.connect(cluster: nil)
+                dismiss()
+            }catch {
+                print(error)
+            }
+        }
         
-        mwAdapter.createNewWallet(privateKey: nil, provider: WalletProvider.backpack)
-        
-        walletId = walletName
-        dismiss()
     }
 }
 

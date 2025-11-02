@@ -61,3 +61,17 @@ class NavigationPathManager: ObservableObject {
     
     
 }
+
+
+enum Destination: Codable, Hashable {
+    case signTransaction
+    case signMessage
+    case signAndSendTransaction
+    case signAllTransactions
+    case browse
+    case disconnect
+    
+    // You can add more cases with associated values if needed
+    // case transactionDetail(String)
+    // case messageDetail(id: String)
+}

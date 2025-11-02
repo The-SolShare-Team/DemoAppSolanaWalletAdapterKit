@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */; };
+		DCCD5D162EB04F35008E6E1F /* SolanaRPC in Frameworks */ = {isa = PBXBuildFile; productRef = DCCD5D152EB04F35008E6E1F /* SolanaRPC */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DCCD5D162EB04F35008E6E1F /* SolanaRPC in Frameworks */,
 				7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -51,6 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				7DAF20A02E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit */,
+				DCCD5D142EB04F35008E6E1F /* Frameworks */,
 				7DAF209F2E9DCB7F00D0F040 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +64,13 @@
 				7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		DCCD5D142EB04F35008E6E1F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -84,6 +94,7 @@
 			name = DemoAppSolanaWalletAdapterKit;
 			packageProductDependencies = (
 				7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */,
+				DCCD5D152EB04F35008E6E1F /* SolanaRPC */,
 			);
 			productName = DemoAppSolanaWalletAdapterKit;
 			productReference = 7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */;
@@ -273,6 +284,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LBJ38R6L4W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
@@ -281,6 +293,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -305,6 +318,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LBJ38R6L4W;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
@@ -313,6 +327,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 26;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -364,6 +379,11 @@
 		7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SolanaWalletAdapterKit;
+		};
+		DCCD5D152EB04F35008E6E1F /* SolanaRPC */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */;
+			productName = SolanaRPC;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

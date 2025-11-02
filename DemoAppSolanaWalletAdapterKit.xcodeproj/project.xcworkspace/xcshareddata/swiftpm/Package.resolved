@@ -47,6 +47,24 @@
       }
     },
     {
+      "identity" : "swift-syntax",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/swiftlang/swift-syntax.git",
+      "state" : {
+        "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
+        "version" : "602.0.0"
+      }
+    },
+    {
+      "identity" : "swiftborsh",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/The-SolShare-Team/SwiftBorsh",
+      "state" : {
+        "revision" : "3769d37229407b5e8bfddd5a9f0704dfde54f956",
+        "version" : "1.0.0"
+      }
+    },
+    {
       "identity" : "tweetnacl-swiftwrap",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/The-SolShare-Team/SolanaKit.swift",

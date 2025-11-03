@@ -30,10 +30,10 @@ struct WalletRow: View {
                 }
             }.walletRowBackground()
         }.plainButtonStyle()
-        
     }
 }
 
+// MARK: - Wallet Selection View
 struct WalletSelectionView: View {
     @Environment(\.dismiss) var dismiss
     @Environment(ContentView.ViewModel.self) var viewModel

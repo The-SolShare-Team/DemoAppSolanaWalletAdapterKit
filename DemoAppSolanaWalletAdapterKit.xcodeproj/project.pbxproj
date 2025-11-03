@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */; };
-		DCCD5D162EB04F35008E6E1F /* SolanaRPC in Frameworks */ = {isa = PBXBuildFile; productRef = DCCD5D152EB04F35008E6E1F /* SolanaRPC */; };
+		DCCD5D492EB83803008E6E1F /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCCD5D482EB83803008E6E1F /* SolanaWalletAdapterKit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DCCD5D162EB04F35008E6E1F /* SolanaRPC in Frameworks */,
+				DCCD5D492EB83803008E6E1F /* SolanaWalletAdapterKit in Frameworks */,
 				7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -94,7 +94,7 @@
 			name = DemoAppSolanaWalletAdapterKit;
 			packageProductDependencies = (
 				7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */,
-				DCCD5D152EB04F35008E6E1F /* SolanaRPC */,
+				DCCD5D482EB83803008E6E1F /* SolanaWalletAdapterKit */,
 			);
 			productName = DemoAppSolanaWalletAdapterKit;
 			productReference = 7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */;
@@ -125,7 +125,7 @@
 			mainGroup = 7DAF20952E9DCB7F00D0F040;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */,
+				DCCD5D472EB83803008E6E1F /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7DAF209F2E9DCB7F00D0F040 /* Products */;
@@ -369,7 +369,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */ = {
+		DCCD5D472EB83803008E6E1F /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../SolanaWalletAdapterKit;
 		};
@@ -380,10 +380,9 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = SolanaWalletAdapterKit;
 		};
-		DCCD5D152EB04F35008E6E1F /* SolanaRPC */ = {
+		DCCD5D482EB83803008E6E1F /* SolanaWalletAdapterKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */;
-			productName = SolanaRPC;
+			productName = SolanaWalletAdapterKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -8,6 +8,8 @@
 import SwiftUI
 import SolanaWalletAdapterKit
 
+
+
 @main
 struct DemoAppSolanaWalletAdapterKitApp: App {
     init() {

@@ -11,6 +11,7 @@ import SolanaWalletAdapterKit
 
 
 struct ContentView: View {
+    @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
     @State private var walletId: String? = nil
     //this will have the wallet id
@@ -19,10 +20,23 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             VStack{
-                Button(action: toggleWalletConfig){
-                            Text(buttonText)
+                Button(buttonText){
+//                    toggleWalletConfig()
+                    print(UIApplication.shared.canOpenURL(URL(string: "solflare://hello")!), UIApplication.shared.canOpenURL(URL(string: "backpack://hello")!), UIApplication.shared.canOpenURL(URL(string: "phantom://hello")!))
                 }.walletButtonStyle()
                 
+                Button("Pair with Solflare") {
+                    Task {
+                        try! await viewModel.pairSolflare()
+                    }
+                }.walletButtonStyle()
+                
+                Button("Unpair with Solflare") {
+                    Task {
+                        try! await viewModel.unpairSolflare()
+                    }
+                }.walletButtonStyle()
+
             }
             .blackScreenStyle()
             .navigationTitle("Solana Wallet")

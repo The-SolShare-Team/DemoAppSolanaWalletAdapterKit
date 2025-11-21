@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		19C019F82EC12A7B0079C8D4 /* SwiftBorsh in Frameworks */ = {isa = PBXBuildFile; productRef = 19C019F72EC12A7B0079C8D4 /* SwiftBorsh */; };
 		7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */; };
 /* End PBXBuildFile section */
 
@@ -42,7 +41,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */,
-				19C019F82EC12A7B0079C8D4 /* SwiftBorsh in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -86,7 +84,6 @@
 			name = DemoAppSolanaWalletAdapterKit;
 			packageProductDependencies = (
 				7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */,
-				19C019F72EC12A7B0079C8D4 /* SwiftBorsh */,
 			);
 			productName = DemoAppSolanaWalletAdapterKit;
 			productReference = 7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */;
@@ -118,7 +115,6 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */,
-				19C019F62EC12A7B0079C8D4 /* XCLocalSwiftPackageReference "../SwiftBorsh" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7DAF209F2E9DCB7F00D0F040 /* Products */;
@@ -277,7 +273,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Q3A2RQ4KSL;
+				DEVELOPMENT_TEAM = R3RV3ZH2AV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
@@ -291,7 +287,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = team.solshare.DemoAppSolanaWalletAdapterKit;
+				PRODUCT_BUNDLE_IDENTIFIER = team.solshare.DemoAppSolanaWalletAdapterKit2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -310,7 +306,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = Q3A2RQ4KSL;
+				DEVELOPMENT_TEAM = R3RV3ZH2AV;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
@@ -324,7 +320,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = team.solshare.DemoAppSolanaWalletAdapterKit;
+				PRODUCT_BUNDLE_IDENTIFIER = team.solshare.DemoAppSolanaWalletAdapterKit2;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -360,10 +356,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		19C019F62EC12A7B0079C8D4 /* XCLocalSwiftPackageReference "../SwiftBorsh" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../SwiftBorsh;
-		};
 		7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../SolanaWalletAdapterKit;
@@ -371,10 +363,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		19C019F72EC12A7B0079C8D4 /* SwiftBorsh */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = SwiftBorsh;
-		};
 		7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SolanaWalletAdapterKit;

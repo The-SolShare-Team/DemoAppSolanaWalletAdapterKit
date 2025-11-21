@@ -1,5 +1,5 @@
 {
-  "originHash" : "b6784f5a5f4bd8cbf40787a6b2d1e484659d532b2a4b238eb4795349d895b3d4",
+  "originHash" : "cac9a85a494d297dde3bc4763955a9ca857dad6572b97c73249166e03ccefe8c",
   "pins" : [
     {
       "identity" : "salkt.swift",
@@ -35,6 +35,15 @@
       "state" : {
         "revision" : "4799286537280063c85a32f09884cfbca301b1a1",
         "version" : "602.0.0"
+      }
+    },
+    {
+      "identity" : "swiftborsh",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/The-SolShare-Team/SwiftBorsh",
+      "state" : {
+        "revision" : "0550438eaf29c6870a61f90715c7ede347f150c5",
+        "version" : "0.0.1"
       }
     },
     {

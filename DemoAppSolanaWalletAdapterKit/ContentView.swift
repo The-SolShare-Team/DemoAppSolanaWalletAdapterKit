@@ -7,60 +7,32 @@
 
 import SwiftUI
 import SolanaWalletAdapterKit
-
-
+import SimpleKeychain
 
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
-    @State private var walletId: String? = nil
-    //this will have the wallet id
-    //not sure if it is called an id or a public key,
-    // rename variable if necessary
+    
     var body: some View {
         NavigationStack {
             VStack{
-                Button(buttonText){
-//                    toggleWalletConfig()
-                    print(UIApplication.shared.canOpenURL(URL(string: "solflare://hello")!), UIApplication.shared.canOpenURL(URL(string: "backpack://hello")!), UIApplication.shared.canOpenURL(URL(string: "phantom://hello")!))
-                }.walletButtonStyle()
-                
-                Button("Pair with Solflare") {
-                    Task {
-                        try! await viewModel.pairSolflare()
-                    }
-                }.walletButtonStyle()
-                
-                Button("Unpair with Solflare") {
-                    Task {
-                        try! await viewModel.unpairSolflare()
-                    }
-                }.walletButtonStyle()
-
+                Button("Pair Wallets") {
+                    showingWalletSelection = true
+                }
+                Button("Clear Keychain") {
+                    try! viewModel.keychain.deleteAll()
+                }
+                Button("Debug") {
+                    print(viewModel.walletManager.connectedWallets)
+                }
             }
-            .blackScreenStyle()
-            .navigationTitle("Solana Wallet")
+            .navigationTitle("SolanaWalletAdapterKit Demo")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showingWalletSelection) {
-                WalletSelectionView(walletId: $walletId)
+                WalletSelectionView()
             }
-        }
+        }.environment(viewModel)
     }
-    
-    private var buttonText: String {
-        if let id = walletId {
-            return "Connected: \(id)"
-        } else {
-            return "Select Wallet"
-        }
-    }
-    
-    private func toggleWalletConfig() {
-        print("toggling wallet")
-        self.showingWalletSelection.toggle()
-    }
-    
-    
 }
 
 #Preview {

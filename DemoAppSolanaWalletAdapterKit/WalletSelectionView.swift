@@ -5,33 +5,29 @@
 //  Created by William Jin on 2025-10-15.
 //
 
-// https://solana.com/developers/cookbook/wallets/connect-wallet-react
-// referencing the demo app on this webpage, a user clicks connect to wallet and is shown a
-// new view with a list of detected wallets
-// these are the swift components for that view
-
 import SwiftUI
+import SolanaWalletAdapterKit
+import SolanaRPC
 
-// each row has the following layout
-// {icon} walletName  <- spacer -> DETECTED
 struct WalletRow: View {
-    let walletName: String
-    let walletIcon: String //icon name, reference assets folder
+    let wallet: any Wallet.Type
     let onConnect: () -> Void
     
     var body: some View {
         Button(action: onConnect) {
             HStack {
-                Image(systemName: walletIcon)
+                Image(systemName: "wallet.pass")
                     .walletIconStyle()
                 
-                Text(walletName)
+                Text(String(describing: wallet))
                     .walletNameStyle()
                 
                 Spacer()
                 
-                Text("Detected")
-                    .detectedTextStyle()
+                if wallet.isProbablyAvailable() {
+                    Text("Detected")
+                        .detectedTextStyle()
+                }
             }.walletRowBackground()
         }.plainButtonStyle()
         
@@ -40,42 +36,34 @@ struct WalletRow: View {
 
 struct WalletSelectionView: View {
     @Environment(\.dismiss) var dismiss
-    @Binding var walletId: String?
-    // Temporary hardcoded wallets for now
-    let wallets = [
-        ("Phantom", "wallet.pass"),
-        ("Solflare", "flame"),
-        ("Backpack", "backpack")
-    ]
+    @Environment(ContentView.ViewModel.self) var viewModel
+    
+    var availableWallets: [String] {
+        viewModel.walletManager.availableWallets.map { $0.identifier }
+    }
     
     var body: some View {
-        
         VStack {
             Text("Connect to a Wallet:")
                 .connectTextStyle()
             VStack(spacing: 15){
-                ForEach(wallets, id: \.0) {wallet in
+                ForEach(availableWallets, id: \.self) { w in
                     WalletRow(
-                        walletName: wallet.0,
-                        walletIcon: wallet.1,
+                        wallet: viewModel.walletManager.availableWalletsMap[w]!,
                         onConnect: {
-                            handleWalletConnection(wallet.0)
+                            Task {
+                                try await handleWalletConnection(viewModel.walletManager.availableWalletsMap[w]!)
+                            }
                         }
                     )
                 }
             }
             .padding()
-        }.blackScreenStyle()
+        }
     }
-    private func handleWalletConnection(_ walletName: String) {
-            print("Connecting to: \(walletName)")
-            // TODO: Call wallet.connect() here
-            walletId = walletName
-            dismiss()
-    }
-}
-
-#Preview {
     
-    WalletSelectionView(walletId: .constant(nil))
+    private func handleWalletConnection(_ wallet: any Wallet.Type) async throws {
+        try await viewModel.walletManager.pair(wallet, for: viewModel.appId, cluster: viewModel.cluster)
+        dismiss()
+    }
 }

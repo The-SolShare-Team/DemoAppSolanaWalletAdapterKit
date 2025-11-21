@@ -11,7 +11,7 @@ import SolanaWalletAdapterKit
 @main
 struct DemoAppSolanaWalletAdapterKitApp: App {
     init() {
-        SolanaWalletAdapter.registerCallbackScheme("myappcryptocallback")
+        SolanaWalletAdapter.registerCallbackScheme("demoappsolanawalletadapterkitcallback")
     }
 
     var body: some Scene {

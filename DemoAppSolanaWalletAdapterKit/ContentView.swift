@@ -59,6 +59,11 @@ struct ContentView: View {
             }
         }.environment(viewModel)
     }
+    
+    private func updateBalance(publicKey: String) async throws-> UInt64 {
+        return try await SolanaRPCClient.init(endpoint: Endpoint.other(url: URL(string: "https://unsplinted-seasonedly-sienna.ngrok-free.dev")!))
+            .getBalance(publicKey: publicKey)
+    }
 }
 
 #Preview {

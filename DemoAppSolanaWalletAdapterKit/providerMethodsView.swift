@@ -14,7 +14,7 @@ struct providerMethodsView : View {
     var body : some View {
         VStack {
             Button(action: {pathManager.path.append(Destination.signTransaction)} ) {
-                Text("Sign Transaction")
+                Text("Sign a Transaction")
             }.walletButtonStyle()
             
             Button(action: {pathManager.path.append(Destination.signMessage)}) {

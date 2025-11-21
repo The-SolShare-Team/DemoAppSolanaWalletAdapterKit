@@ -18,7 +18,7 @@ struct signTransactionView: View {
             Text("This view was pushed onto the stack.")
                 .foregroundColor(.secondary)
         }
-        .navigationTitle("Transaction")
+        .navigationTitle("Sign a Transaction")
     }
     
     

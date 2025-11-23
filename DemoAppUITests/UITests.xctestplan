@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "8B7685F9-3345-479A-9184-62E935DC2D71",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:DemoAppSolanaWalletAdapterKit.xcodeproj",
+        "identifier" : "DCDA38342ED3C00500D8281F",
+        "name" : "DemoAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

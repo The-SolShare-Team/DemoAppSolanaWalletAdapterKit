@@ -8,11 +8,31 @@
 
 /* Begin PBXBuildFile section */
 		7DAF20AE2E9DCB9500D0F040 /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */; };
+		DCA241A72ED3C86E00C21028 /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCA241A62ED3C86E00C21028 /* SolanaWalletAdapterKit */; };
 		DCCD5D492EB83803008E6E1F /* SolanaWalletAdapterKit in Frameworks */ = {isa = PBXBuildFile; productRef = DCCD5D482EB83803008E6E1F /* SolanaWalletAdapterKit */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		DCA241A42ED3C84B00C21028 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7DAF20962E9DCB7F00D0F040 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = DCDA38652ED3C70200D8281F;
+			remoteInfo = TestHost;
+		};
+		DCDA38392ED3C00500D8281F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7DAF20962E9DCB7F00D0F040 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7DAF209D2E9DCB7F00D0F040;
+			remoteInfo = DemoAppSolanaWalletAdapterKit;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DemoAppSolanaWalletAdapterKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCDA38352ED3C00500D8281F /* DemoAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DemoAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCDA38662ED3C70200D8281F /* TestHost.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestHost.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -34,6 +54,19 @@
 			path = DemoAppSolanaWalletAdapterKit;
 			sourceTree = "<group>";
 		};
+		DCDA38362ED3C00500D8281F /* DemoAppUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = DemoAppUITests;
+			sourceTree = "<group>";
+		};
+		DCDA38672ED3C70200D8281F /* TestHost */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DCA241A32ED3C77F00C21028 /* Exceptions for "TestHost" folder in "TestHost" target */,
+			);
+			path = TestHost;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,6 +79,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DCDA38322ED3C00500D8281F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCDA38632ED3C70200D8281F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DCA241A72ED3C86E00C21028 /* SolanaWalletAdapterKit in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -53,6 +101,8 @@
 			isa = PBXGroup;
 			children = (
 				7DAF20A02E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit */,
+				DCDA38362ED3C00500D8281F /* DemoAppUITests */,
+				DCDA38672ED3C70200D8281F /* TestHost */,
 				DCCD5D142EB04F35008E6E1F /* Frameworks */,
 				7DAF209F2E9DCB7F00D0F040 /* Products */,
 			);
@@ -62,6 +112,8 @@
 			isa = PBXGroup;
 			children = (
 				7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */,
+				DCDA38352ED3C00500D8281F /* DemoAppUITests.xctest */,
+				DCDA38662ED3C70200D8281F /* TestHost.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -100,6 +152,53 @@
 			productReference = 7DAF209E2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit.app */;
 			productType = "com.apple.product-type.application";
 		};
+		DCDA38342ED3C00500D8281F /* DemoAppUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DCDA383B2ED3C00500D8281F /* Build configuration list for PBXNativeTarget "DemoAppUITests" */;
+			buildPhases = (
+				DCDA38312ED3C00500D8281F /* Sources */,
+				DCDA38322ED3C00500D8281F /* Frameworks */,
+				DCDA38332ED3C00500D8281F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				DCDA383A2ED3C00500D8281F /* PBXTargetDependency */,
+				DCA241A52ED3C84B00C21028 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				DCDA38362ED3C00500D8281F /* DemoAppUITests */,
+			);
+			name = DemoAppUITests;
+			packageProductDependencies = (
+			);
+			productName = DemoAppUITests;
+			productReference = DCDA38352ED3C00500D8281F /* DemoAppUITests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		DCDA38652ED3C70200D8281F /* TestHost */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = DCDA38702ED3C70400D8281F /* Build configuration list for PBXNativeTarget "TestHost" */;
+			buildPhases = (
+				DCDA38622ED3C70200D8281F /* Sources */,
+				DCDA38632ED3C70200D8281F /* Frameworks */,
+				DCDA38642ED3C70200D8281F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				DCDA38672ED3C70200D8281F /* TestHost */,
+			);
+			name = TestHost;
+			packageProductDependencies = (
+				DCA241A62ED3C86E00C21028 /* SolanaWalletAdapterKit */,
+			);
+			productName = TestHost;
+			productReference = DCDA38662ED3C70200D8281F /* TestHost.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -111,6 +210,13 @@
 				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					7DAF209D2E9DCB7F00D0F040 = {
+						CreatedOnToolsVersion = 26.0.1;
+					};
+					DCDA38342ED3C00500D8281F = {
+						CreatedOnToolsVersion = 26.0.1;
+						TestTargetID = DCDA38652ED3C70200D8281F;
+					};
+					DCDA38652ED3C70200D8281F = {
 						CreatedOnToolsVersion = 26.0.1;
 					};
 				};
@@ -133,12 +239,28 @@
 			projectRoot = "";
 			targets = (
 				7DAF209D2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit */,
+				DCDA38342ED3C00500D8281F /* DemoAppUITests */,
+				DCDA38652ED3C70200D8281F /* TestHost */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		7DAF209C2E9DCB7F00D0F040 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCDA38332ED3C00500D8281F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCDA38642ED3C70200D8281F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -155,7 +277,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DCDA38312ED3C00500D8281F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DCDA38622ED3C70200D8281F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		DCA241A52ED3C84B00C21028 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = DCDA38652ED3C70200D8281F /* TestHost */;
+			targetProxy = DCA241A42ED3C84B00C21028 /* PBXContainerItemProxy */;
+		};
+		DCDA383A2ED3C00500D8281F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7DAF209D2E9DCB7F00D0F040 /* DemoAppSolanaWalletAdapterKit */;
+			targetProxy = DCDA38392ED3C00500D8281F /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		7DAF20A72E9DCB8100D0F040 /* Debug */ = {
@@ -195,6 +344,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -210,7 +360,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -258,6 +408,8 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -267,7 +419,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
@@ -345,6 +497,28 @@
 			};
 			name = Release;
 		};
+		DCDA383D2ED3C00500D8281F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LBJ38R6L4W;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.DemoAppUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestHost.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TestHost";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -366,6 +540,24 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		DCDA383B2ED3C00500D8281F /* Build configuration list for PBXNativeTarget "DemoAppUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCDA383C2ED3C00500D8281F /* Debug */,
+				DCDA383D2ED3C00500D8281F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		DCDA38702ED3C70400D8281F /* Build configuration list for PBXNativeTarget "TestHost" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DCDA38712ED3C70400D8281F /* Debug */,
+				DCDA38722ED3C70400D8281F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -378,6 +570,11 @@
 /* Begin XCSwiftPackageProductDependency section */
 		7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */ = {
 			isa = XCSwiftPackageProductDependency;
+			productName = SolanaWalletAdapterKit;
+		};
+		DCA241A62ED3C86E00C21028 /* SolanaWalletAdapterKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DCCD5D472EB83803008E6E1F /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */;
 			productName = SolanaWalletAdapterKit;
 		};
 		DCCD5D482EB83803008E6E1F /* SolanaWalletAdapterKit */ = {

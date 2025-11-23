@@ -22,7 +22,7 @@ struct DemoAppUITests {
 
 @Suite("Wallet Integration Tests")
 
-struct BackpackIntegrationTests {
+struct IntegrationTests {
     let backpackPublicKey1 = "4aMrMVSkJotNykdGN3mhAHX4ByN5zqT4Hmw6MDRz68FH" // 1000000 sol
     let backpackPublicKey2 = "6AK9k3ZSy9TZWd1Auz9Aep2gUvb5zkKNQd9PevrNo7Ww" // 100 sol
     let rpcClient: SolanaRPCClient = SolanaRPCClient(

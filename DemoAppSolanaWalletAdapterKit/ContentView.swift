@@ -1,8 +1,7 @@
+
 //
 //  ContentView.swift
 //  DemoAppSolanaWalletAdapterKit
-//
-//  Created by Samuel Martineau on 2025-10-13.
 //
 
 import SwiftUI
@@ -68,4 +67,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        .environmentObject(WalletViewModel())
+        .environmentObject(NavigationPathManager())
 }

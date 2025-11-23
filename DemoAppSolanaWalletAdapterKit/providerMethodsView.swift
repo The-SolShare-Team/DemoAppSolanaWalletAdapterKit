@@ -8,8 +8,9 @@ import SwiftUI
 import Foundation
 
 
-struct providerMethodsView : View {
+struct ProviderMethodsView : View {
     @EnvironmentObject var pathManager: NavigationPathManager
+    @EnvironmentObject private var viewModel: WalletViewModel
     
     var body : some View {
         VStack {
@@ -32,11 +33,13 @@ struct providerMethodsView : View {
             Button(action: {pathManager.path.append(Destination.browse)}) {
                 Text("Browse")
             }.walletButtonStyle()
-            
-            Button(action: {pathManager.path.append(Destination.disconnect)}) {
-                Text("Disconnect")
-            }
+//            
+//            Button(action: {pathManager.path.append(Destination.disconnect(walletID: walletID))}) {
+//                Text("Disconnect")
+//            }
             .walletButtonStyle()
+        }.task {
+            print("RENDER: ProviderView")
         }
     }
 }

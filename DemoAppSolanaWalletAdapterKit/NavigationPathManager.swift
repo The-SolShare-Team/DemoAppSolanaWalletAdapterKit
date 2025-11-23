@@ -72,6 +72,7 @@ enum Destination: Codable, Hashable {
     case disconnect
     case walletSelection
     case providerMethods
+    case walletDetails
     // You can add more cases with associated values if needed
     // case transactionDetail(String)
     // case messageDetail(id: String)

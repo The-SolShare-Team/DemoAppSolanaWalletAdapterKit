@@ -75,6 +75,12 @@ extension View {
         self
             .buttonStyle(PlainButtonStyle())
     }
+    func redButtonStyle() -> some View {
+        self.padding() // Add padding for a larger tap area
+            .background(Color.red) // Red background
+            .foregroundColor(.white) // White text for contrast
+            .cornerRadius(12) // Rounded corners
+    }
 }
 
 // Styles for the big wallet connection component

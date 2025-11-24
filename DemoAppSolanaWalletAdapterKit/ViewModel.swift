@@ -18,7 +18,7 @@ extension ContentView {
             url: URL(string: "https://solshare.team")!,
             icon: "favicon.ico"
         )
-        let cluster = Endpoint.testnet
+        let cluster = Endpoint.devnet
         
         let keychain: SimpleKeychain
         let walletManager: WalletConnectionManager

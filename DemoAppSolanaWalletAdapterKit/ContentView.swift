@@ -7,46 +7,60 @@
 
 import SwiftUI
 import SolanaWalletAdapterKit
-
-
+import SimpleKeychain
+import SolanaTransactions
+import SolanaRPC
+import Base58
 
 struct ContentView: View {
+    @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
-    @State private var walletId: String? = nil
-    //this will have the wallet id
-    //not sure if it is called an id or a public key,
-    // rename variable if necessary
+    
     var body: some View {
         NavigationStack {
             VStack{
-                Button(action: toggleWalletConfig){
-                            Text(buttonText)
-                }.walletButtonStyle()
-                
+                Button("Pair Wallets") {
+                    showingWalletSelection = true
+                }
+                Button("Clear Keychain") {
+                    try! viewModel.keychain.deleteAll()
+                }
+                Button("Debug") {
+                    print(viewModel.walletManager.connectedWallets)
+                }
+                Button("Sign And Send Transaction") {
+                    Task {
+                        do {
+                            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
+                            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
+                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                                                                                  blockhash: latestBlockhash) {
+                                SystemProgram.transfer(
+                                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
+                                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
+                                    lamports: 1_000_000_000)
+                            }
+                            
+                            //                        Transaction(signatures: [1111111111111111111111111111111111111111111111111111111111111111], message: SolanaTransactions.VersionedMessage.legacyMessage(SolanaTransactions.LegacyMessage(signatureCount: 1, readOnlyAccounts: 0, readOnlyNonSigners: 1, accounts: [HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW, CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz, 11111111111111111111111111111111], blockhash: F2fGr4wB7fRPbHGNkRYpqpZnNcRmJgz4LxNJmEnHN926, instructions: [SolanaTransactions.CompiledInstruction(programIdIndex: 2, accounts: [0, 1], data: [2, 0, 0, 0, 0, 202, 154, 59, 0, 0, 0, 0])])))
+                            
+                            print(transaction)
+                            
+//                            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
+                            
+//                            print(response)
+                        } catch {
+                            print("Caught error: \(error)")
+                        }
+                    }
+                }
             }
-            .blackScreenStyle()
-            .navigationTitle("Solana Wallet")
+            .navigationTitle("SolanaWalletAdapterKit Demo")
             .navigationBarTitleDisplayMode(.inline)
             .navigationDestination(isPresented: $showingWalletSelection) {
-                WalletSelectionView(walletId: $walletId)
+                WalletSelectionView()
             }
-        }
+        }.environment(viewModel)
     }
-    
-    private var buttonText: String {
-        if let id = walletId {
-            return "Connected: \(id)"
-        } else {
-            return "Select Wallet"
-        }
-    }
-    
-    private func toggleWalletConfig() {
-        print("toggling wallet")
-        self.showingWalletSelection.toggle()
-    }
-    
-    
 }
 
 #Preview {

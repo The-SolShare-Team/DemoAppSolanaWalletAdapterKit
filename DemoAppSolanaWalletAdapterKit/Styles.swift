@@ -10,18 +10,18 @@
 import Foundation
 import SwiftUI
 
-//make a view fill the whole screen with background black (better on my eyes)
-extension View {
-    func blackScreenStyle() -> some View {
-        ZStack {
-            Color.black.ignoresSafeArea()
-            self
-        }
-    }
-}
+//// Make a view fill the whole screen with background black (better on my eyes)
+//extension View {
+//    func blackScreenStyle() -> some View {
+//        ZStack {
+//            Color.black.ignoresSafeArea()
+//            self
+//        }
+//    }
+//}
 
 
-//connect to wallet button styles
+// Connect to wallet button styles
 struct WalletButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -41,8 +41,7 @@ extension View {
 }
 
 
-//wallet icon style when opening wallet selection UI
-
+// Wallet icon style when opening wallet selection UI
 extension Image {
     func walletIconStyle() -> some View {
         self
@@ -53,7 +52,7 @@ extension Image {
 }
 
 
-// styles for the individual wallet row components
+// Styles for the individual wallet row components
 extension View {
     func walletNameStyle() -> some View {
         self
@@ -76,9 +75,15 @@ extension View {
         self
             .buttonStyle(PlainButtonStyle())
     }
+    func redButtonStyle() -> some View {
+        self.padding() // Add padding for a larger tap area
+            .background(Color.red) // Red background
+            .foregroundColor(.white) // White text for contrast
+            .cornerRadius(12) // Rounded corners
+    }
 }
 
-// styles for the big wallet connection component
+// Styles for the big wallet connection component
 extension View {
     func connectTextStyle() -> some View {
         self

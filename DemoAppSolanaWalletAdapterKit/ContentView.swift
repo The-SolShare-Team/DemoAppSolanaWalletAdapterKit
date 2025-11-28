@@ -1,7 +1,8 @@
-
 //
 //  ContentView.swift
 //  DemoAppSolanaWalletAdapterKit
+//
+//  Created by Samuel Martineau on 2025-10-13.
 //
 
 import SwiftUI
@@ -9,13 +10,14 @@ import SolanaWalletAdapterKit
 import SimpleKeychain
 import SolanaTransactions
 import SolanaRPC
+import Base58
 
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
     
     var body: some View {
-        NavigationStack(path: $pathManager.path){
+        NavigationStack {
             VStack{
                 Button("Pair Wallets") {
                     showingWalletSelection = true
@@ -31,7 +33,8 @@ struct ContentView: View {
                         do {
                             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
                             let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                                                                                  blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
                                     to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
@@ -42,9 +45,9 @@ struct ContentView: View {
                             
                             print(transaction)
                             
-                            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
+//                            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
                             
-                            print(response)
+//                            print(response)
                         } catch {
                             print("Caught error: \(error)")
                         }
@@ -58,15 +61,8 @@ struct ContentView: View {
             }
         }.environment(viewModel)
     }
-    
-    private func updateBalance(publicKey: String) async throws-> UInt64 {
-        return try await SolanaRPCClient.init(endpoint: Endpoint.other(url: URL(string: "https://unsplinted-seasonedly-sienna.ngrok-free.dev")!))
-            .getBalance(publicKey: publicKey)
-    }
 }
 
 #Preview {
     ContentView()
-        .environmentObject(WalletViewModel())
-        .environmentObject(NavigationPathManager())
 }

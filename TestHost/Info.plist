@@ -8,7 +8,7 @@
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>CFBundleURLName</key>
-			<string>com.demoApp.testhost</string>
+			<string>TestHost</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>solanaMWADemoTest</string>

@@ -16,7 +16,6 @@ import SolanaTransactions
 import SwiftBorsh
 import SimpleKeychain
 import Base58
-import Base64
 
 // MARK: - Global Constants
 let backpackB58PublicKey1 = "4aMrMVSkJotNykdGN3mhAHX4ByN5zqT4Hmw6MDRz68FH" // 1000000 sol localnet
@@ -34,7 +33,7 @@ let myApp = AppIdentity(
     icon: "Solshare"
 )
 
-let backpackDevNetClient = SolanaRPCClient(
+nonisolated(unsafe) let backpackDevNetClient = SolanaRPCClient(
     endpoint: Endpoint.other(
         name: "mainnet-beta",
 //        url: URL(string: "https://unsplinted-seasonedly-sienna.ngrok-free.dev")! // localnet url for ngrok + solforge
@@ -42,7 +41,7 @@ let backpackDevNetClient = SolanaRPCClient(
     )
 )
 
-let devNetClient = SolanaRPCClient(
+nonisolated(unsafe) let devNetClient = SolanaRPCClient(
     endpoint: .devnet
 )
 
@@ -147,20 +146,21 @@ class IntegrationTests {
         #expect(walletConnectionManager.availableWallets.contains(where: { $0 == PhantomWallet.self }))
 
         // availableWalletsMap
-        if let solflareType = walletConnectionManager.availableWalletsMap[SolflareWallet.identifier] {
-            #expect(solflareType == SolflareWallet.self)
+        if let phantomWallet = walletConnectionManager.availableWalletsMap[PhantomWallet.identifier] {
+            #expect(type(of: phantomWallet) == PhantomWallet.self)
         } else {
             #expect(Bool(false)) // fail test if nil
         }
-        if let backpackType = walletConnectionManager.availableWalletsMap[BackpackWallet.identifier] {
-            #expect(backpackType == BackpackWallet.self)
+        if let solflareWallet = walletConnectionManager.availableWalletsMap[SolflareWallet.identifier] {
+            #expect(type(of: solflareWallet) == SolflareWallet.self)
         } else {
-            #expect(Bool(false)) // fail test if nil
+            #expect(Bool(false))
         }
-        if let phantomType = walletConnectionManager.availableWalletsMap[PhantomWallet.identifier] {
-            #expect(phantomType == PhantomWallet.self)
+
+        if let backpackWallet = walletConnectionManager.availableWalletsMap[BackpackWallet.identifier] {
+            #expect(type(of: backpackWallet) == BackpackWallet.self)
         } else {
-            #expect(Bool(false)) // fail test if nil
+            #expect(Bool(false))
         }
 
         // connectedWallets

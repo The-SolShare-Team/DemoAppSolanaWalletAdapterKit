@@ -26,10 +26,10 @@ extension ContentView {
         init() {
             keychain = SimpleKeychain()
             walletManager = WalletConnectionManager(storage: KeychainStorage(keychain))
-            
-            Task { [weak self] in
-                try await self?.walletManager.recoverWallets()
-            }
+//            
+//            Task { [weak self] in
+//                try await self?.walletManager.recoverWallets()
+//            }
         }
     }
 }

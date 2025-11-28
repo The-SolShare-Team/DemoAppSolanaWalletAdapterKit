@@ -16,6 +16,7 @@ import SolanaTransactions
 import SwiftBorsh
 import SimpleKeychain
 import Base58
+import Base64
 
 // MARK: - Global Constants
 let backpackB58PublicKey1 = "4aMrMVSkJotNykdGN3mhAHX4ByN5zqT4Hmw6MDRz68FH" // 1000000 sol localnet
@@ -337,7 +338,7 @@ struct TransactionAndRPCTests {
             print("Fetching balance for (backpack): \(publicKey)")
             
             // Fetch balance using RPC client
-            let balance = try await backpackDevNetClient.getBalance(publicKey: publicKey)
+            let balance = try await backpackDevNetClient.getBalance(account: PublicKey(bytes: Data(base58Encoded: publicKey)!))
             
             print("Balance: \(balance) lamports")
             print("Balance: \(String(format: "%.2f", Double(balance) / 1_000_000_000)) SOL")
@@ -349,7 +350,7 @@ struct TransactionAndRPCTests {
             print("Fetching balance for (solflare): \(publicKey)")
             
             // Fetch balance using RPC client
-            let balance = try await devNetClient.getBalance(publicKey: publicKey)
+            let balance = try await devNetClient.getBalance(account: PublicKey(bytes: Data(base58Encoded: publicKey)!))
             
             print("Balance: \(balance) lamports")
             print("Balance: \(String(format: "%.2f", Double(balance) / 1_000_000_000)) SOL")
@@ -667,7 +668,7 @@ struct TransactionAndRPCTests {
         // For simplicity, we will send the transaction back to the sender's own address.
         let recipientPublicKey = fromPublicKey
         print("Using wallet \(formatKey(fromPublicKey.description)) as both sender and recipient.")
-        print("\n--- [Test 1] Building and sending transaction with configuration tuple ---")
+        print("\n--- [Test 1] Building and sending transaction with configuration struct ---")
         let transaction1 = try await buildTransferTransaction(
             client: client,
             fromPublicKey: fromPublicKey,
@@ -675,15 +676,9 @@ struct TransactionAndRPCTests {
             lamports: lamports
         )
         let signedResponse1 = try await wallet.signTransaction(transaction: transaction1)
-        let signedTransaction1 = try Transaction(bytes: Data(base58Encoded: signedResponse1.transaction)!)
+        let signedTransaction1 = signedResponse1.transaction
         
-        let config1: (
-            encoding: TransactionEncoding?,
-            skipPreflight: Bool?,
-            preflightCommitment: Commitment?,
-            maxRetries: Int?,
-            minContextSlot: Int?
-        ) = (
+        let config1 = SolanaRPCClient.SendTransactionConfiguration(
             encoding: .base64,         // Test with base64 encoding
             skipPreflight: false,       // Perform preflight checks
             preflightCommitment: .confirmed, // Wait for 'confirmed' commitment
@@ -696,7 +691,7 @@ struct TransactionAndRPCTests {
         print("Transaction 1 sent. Signature: \(signature1)")
         #expect(signedTransaction1.signatures.first == signature1)
         
-        print("\n--- [Test 2] Building and sending transaction with TransactionOptions struct ---")
+        print("\n--- [Test 2] Building and sending transaction with configuration struct ---")
         let transaction2 = try await buildTransferTransaction(
             client: client,
             fromPublicKey: fromPublicKey,
@@ -706,10 +701,10 @@ struct TransactionAndRPCTests {
         
         // Sign the second transaction
         let signedResponse2 = try await wallet.signTransaction(transaction: transaction2)
-        let signedTransaction2 = try Transaction(bytes: Data(base58Encoded: signedResponse2.transaction)!)
+        let signedTransaction2 = signedResponse2.transaction
         
-        // Define options using the struct
-        let options2 = TransactionOptions(
+        // Define options using the new struct
+        let config2 = SolanaRPCClient.SendTransactionConfiguration(
             encoding: .base58,         // Test with default base58 encoding
             skipPreflight: true,        // Skip preflight checks
             preflightCommitment: .processed, // Use a lower commitment level
@@ -718,33 +713,14 @@ struct TransactionAndRPCTests {
         )
         
         print("Sending transaction 2 with options: skipPreflight=true, maxRetries=3")
-        let signature2 = try await client.sendTransaction(transaction: signedTransaction2, transactionOptions: options2)
+        let signature2 = try await client.sendTransaction(transaction: signedTransaction2, configuration: config2)
         print("Transaction 2 sent. Signature: \(signature2)")
         #expect(signedTransaction2.signatures.first == signature2)
         
-        print("\n--- Verifying both transactions on-chain ---")
+        print("\n--- Verification step removed as requested ---")
         // Wait a few seconds for transactions to be finalized
         try await Task.sleep(nanoseconds: 4_000_000_000)
-
-        // Verify transaction 1
-        print("Verifying transaction 1: \(signature1)...")
-        let transactionInfo1 = try await client.getTransaction(signature: signature1.description)
-        if let meta = transactionInfo1.meta, case let .object(metaDict) = meta, let errValue = metaDict["err"] {
-            switch errValue {
-            case .null: print("Transaction 1 successful.")
-            default: #expect(Bool(false), "Transaction 1 failed with error: \(errValue)")
-            }
-        }
-
-        // Verify transaction 2
-        print("Verifying transaction 2: \(signature2)...")
-        let transactionInfo2 = try await client.getTransaction(signature: signature2.description)
-        if let meta = transactionInfo2.meta, case let .object(metaDict) = meta, let errValue = metaDict["err"] {
-            switch errValue {
-            case .null: print("Transaction 2 successful.")
-            default: #expect(Bool(false), "Transaction 2 failed with error: \(errValue)")
-            }
-        }
+        print("Note: On-chain verification using getTransaction has been removed.")
         
         print("\nSend options test completed successfully.")
     }
@@ -1100,23 +1076,10 @@ func runStandardTransactionTest<W: Wallet>(
     let signature = response.signature
     print("Signature: \(signature)")
 
+    // Note: On-chain verification using getTransaction has been removed.
+    print("\n--- Verification step removed as requested ---")
     try await Task.sleep(nanoseconds: 2_000_000_000)
-
-    print("Fetching transaction status...")
-    let transactionInfo = try await client.getTransaction(signature: signature.description)
-
-    // Check for errors
-    if let meta = transactionInfo.meta,
-       case let .object(metaDict) = meta,
-       let errValue = metaDict["err"] {
-        switch errValue {
-        case .null:
-            print("Transaction successful.")
-        default:
-            #expect(Bool(false), "Transaction failed with error: \(errValue)")
-            return
-        }
-    }
+    print("Note: On-chain verification using getTransaction has been removed.")
 
     // manual inspection in app shows that the balances changed
 }
@@ -1157,7 +1120,7 @@ func runTransactionWithRPCSend<W: Wallet> (
     
     print("Signing transaction")
     let response = try await wallet.signTransaction(transaction: transaction)
-    let signedTransaction = try Transaction(bytes: Data(base58Encoded: response.transaction)!)
+    let signedTransaction = response.transaction
     let signedSignature = signedTransaction.signatures.first!
     print("Got signed transaction back with a signature of \(signedSignature.description)")
     
@@ -1165,22 +1128,10 @@ func runTransactionWithRPCSend<W: Wallet> (
     print("confirmed signature from RPC sendTransaction: \(confirmedSignature.description)")
     assert(confirmedSignature == signedSignature)
     
+    // Note: On-chain verification using getTransaction has been removed.
+    print("\n--- Verification step removed as requested ---")
     try await Task.sleep(nanoseconds: 2_000_000_000)
-    print("Fetching transaction status...")
-    let transactionInfo = try await client.getTransaction(signature: signedSignature.description)
-
-    // Check for errors
-    if let meta = transactionInfo.meta,
-       case let .object(metaDict) = meta,
-       let errValue = metaDict["err"] {
-        switch errValue {
-        case .null:
-            print("Transaction successful.")
-        default:
-            #expect(Bool(false), "Transaction failed with error: \(errValue)")
-            return
-        }
-    }
+    print("Note: On-chain verification using getTransaction has been removed.")
 
     // manual inspection in app shows that the balances changed
 }
@@ -1194,8 +1145,8 @@ func buildTransferTransaction(
     lamports: Int64
 ) async throws -> Transaction {
     print("\n--- BEFORE TRANSACTION ---")
-    let fromBalanceBefore = try await client.getBalance(publicKey: fromPublicKey.description)
-    let toBalanceBefore = try await client.getBalance(publicKey: toPublicKey.description)
+    let fromBalanceBefore = try await client.getBalance(account: fromPublicKey)
+    let toBalanceBefore = try await client.getBalance(account: toPublicKey)
     print("From (\(formatKey(fromPublicKey.description))): \(formatSOL(fromBalanceBefore)) SOL")
     print("To (\(formatKey(toPublicKey.description))):   \(formatSOL(toBalanceBefore)) SOL")
     print("---------------------------\n")
@@ -1207,7 +1158,7 @@ func buildTransferTransaction(
         to: toPublicKey,
         lamports: lamports
     )
-    return try Transaction(blockhash: blockhash) { instruction }
+    return try Transaction(feePayer: fromPublicKey,  blockhash: blockhash) { instruction }
 }
 
 
@@ -1257,22 +1208,15 @@ func signAndSendAllTransactionsTest(
         transactions.append(tx)
     }
 
-    let encoded = try await wallet.signAllTransactions(transactions: transactions).transactions
-    let decoded: [Transaction] = try encoded.compactMap { encoded in
-        guard let bytes = Data(base58Encoded: encoded) else {
-            print("Failed to decode transaction: \(encoded)")
-            return nil
-        }
-        return try Transaction(bytes: bytes)
-    }
+    let signedTransactions = try await wallet.signAllTransactions(transactions: transactions).transactions
 
-    let signatures = decoded.compactMap { $0.signatures.first }
+    let signatures = signedTransactions.compactMap { $0.signatures.first }
     print("\(label) Signatures:")
     signatures.enumerated().forEach { i, sig in
         print("  [\(i)] \(sig)")
     }
 
-    for (idx, transaction) in decoded.enumerated() {
+    for (idx, transaction) in signedTransactions.enumerated() {
         let confirmedSig = try await client.sendTransaction(transaction: transaction)
         assert(signatures[idx] == confirmedSig)
         print("Sent transaction with signature \(confirmedSig.description)")

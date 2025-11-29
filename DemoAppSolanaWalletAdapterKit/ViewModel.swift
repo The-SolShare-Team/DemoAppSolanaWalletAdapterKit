@@ -15,7 +15,8 @@ extension ContentView {
     class ViewModel{
         let appId = AppIdentity(
             name: "Demo App Solana Wallet Adapter Kit",
-            url: URL(string: "https://solshare.team")!,
+//            url: URL(string: "https://solshare.team")!,
+            url: URL(string: "https://example.com")!,
             icon: "favicon.ico"
         )
         let cluster = Endpoint.devnet

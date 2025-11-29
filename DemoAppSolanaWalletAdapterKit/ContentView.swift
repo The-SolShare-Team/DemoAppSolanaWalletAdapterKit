@@ -12,6 +12,10 @@ struct ContentView: View {
     // MARK: - Selected Wallet State
     @State private var selectedWalletIndex: Int = 0
     
+    // MARK: - Disconnect Selection State
+    @State private var showingDisconnectSelection: Bool = false
+    @State private var selectedWalletsToDisconnect: Set<Int> = []
+    
     private var selectedWallet: (any Wallet)? {
         guard !viewModel.walletManager.connectedWallets.isEmpty,
               viewModel.walletManager.connectedWallets.indices.contains(selectedWalletIndex) else {
@@ -86,14 +90,12 @@ struct ContentView: View {
                             }
                             
                             DemoButton(
-                                title: "Disconnect Wallets",
+                                title: "Disconnect Wallet(s)",
                                 icon: "xmark.circle.fill",
                                 style: .danger,
                                 isLoading: isLoading
                             ) {
-                                Task {
-                                    await disconnectAllWallets()
-                                }
+                                showDisconnectSelection()
                             }
                         }
                         
@@ -197,6 +199,20 @@ struct ContentView: View {
             .navigationDestination(isPresented: $showingWalletSelection) {
                 WalletSelectionView()
             }
+            .sheet(isPresented: $showingDisconnectSelection) {
+                DisconnectWalletSelectionView(
+                    connectedWallets: connectedWallets,
+                    selectedWallets: $selectedWalletsToDisconnect,
+                    onDisconnect: {
+                        Task {
+                            await disconnectSelectedWallets()
+                        }
+                    },
+                    onCancel: {
+                        selectedWalletsToDisconnect.removeAll()
+                    }
+                )
+            }
             .alert("Error", isPresented: .constant(errorMessage != nil)) {
                 Button("OK") {
                     errorMessage = nil
@@ -216,12 +232,23 @@ struct ContentView: View {
         }
     }
     
-    private func disconnectAllWallets() async {
+    private func showDisconnectSelection() {
+        guard !connectedWallets.isEmpty else {
+            errorMessage = "No wallets to disconnect."
+            return
+        }
+        selectedWalletsToDisconnect.removeAll()
+        showingDisconnectSelection = true
+    }
+    
+    private func disconnectSelectedWallets() async {
         isLoading = true
         defer { isLoading = false }
         
-        // Make a copy of the connected wallets since unpair mutates the array
-        let walletsToDisconnect = viewModel.walletManager.connectedWallets
+        // Get the wallets to disconnect in order to avoid index mutation issues
+        let walletsToDisconnect = selectedWalletsToDisconnect.compactMap { index in
+            connectedWallets.indices.contains(index) ? connectedWallets[index] : nil
+        }
         
         for var wallet in walletsToDisconnect {
             do {
@@ -233,8 +260,13 @@ struct ContentView: View {
             }
         }
         
-        // Reset selected wallet index after disconnecting all
-        selectedWalletIndex = 0
+        // Reset selected wallet index if necessary
+        if selectedWalletIndex >= connectedWallets.count {
+            selectedWalletIndex = max(0, connectedWallets.count - 1)
+        }
+        
+        selectedWalletsToDisconnect.removeAll()
+        showingDisconnectSelection = false
     }
     
     private func signTransaction() async {
@@ -368,7 +400,7 @@ struct ContentView: View {
             
             let response: () = try await wallet.browse(
                 url: URL(string: "https://apple.com")!,
-                ref: URL(string: "https://solshare.team")!
+                ref: URL(string: "https://solshare.syc.onl")!
             )
             print(response)
         } catch {
@@ -617,7 +649,71 @@ struct DemoButton: View {
     }
 }
 
-// MARK: - Preview
+// MARK: - Disconnect Wallet Selection View
+
+struct DisconnectWalletSelectionView: View {
+    let connectedWallets: [any Wallet]
+    @Binding var selectedWallets: Set<Int>
+    let onDisconnect: () -> Void
+    let onCancel: () -> Void
+    @Environment(\.dismiss) private var dismiss
+    
+    private func formatWalletDisplay(_ wallet: any Wallet) -> String {
+        let provider = String(describing: type(of: wallet))
+        if let publicKey = wallet.publicKey {
+            let publicKeyString = publicKey.description
+            let shortKey = publicKeyString.prefix(3) + "…" + publicKeyString.suffix(3)
+            return "\(provider) wallet: \(shortKey)"
+        } else {
+            return "\(provider) wallet: unknown"
+        }
+    }
+    
+    var body: some View {
+        NavigationView {
+            List {
+                ForEach(Array(connectedWallets.enumerated()), id: \.offset) { index, wallet in
+                    HStack {
+                        Text(formatWalletDisplay(wallet))
+                            .font(.subheadline)
+                        
+                        Spacer()
+                        
+                        Image(systemName: selectedWallets.contains(index) ? "checkmark.circle.fill" : "circle")
+                            .foregroundColor(selectedWallets.contains(index) ? .red : .gray)
+                            .font(.title3)
+                    }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        if selectedWallets.contains(index) {
+                            selectedWallets.remove(index)
+                        } else {
+                            selectedWallets.insert(index)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Select Wallets to Disconnect")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Cancel") {
+                        onCancel()
+                        dismiss()
+                    }
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button("Disconnect") {
+                        onDisconnect()
+                    }
+                    .disabled(selectedWallets.isEmpty)
+                    .foregroundColor(.red)
+                }
+            }
+        }
+    }
+}
 
 #Preview {
     ContentView()

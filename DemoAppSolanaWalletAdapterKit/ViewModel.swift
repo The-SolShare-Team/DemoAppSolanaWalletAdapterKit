@@ -12,7 +12,7 @@ import SimpleKeychain
 
 extension ContentView {
     @Observable
-    class ViewModel {
+    class ViewModel{
         let appId = AppIdentity(
             name: "Demo App Solana Wallet Adapter Kit",
             url: URL(string: "https://solshare.team")!,

@@ -2,6 +2,17 @@ import SwiftUI
 import SolanaWalletAdapterKit
 import SolanaRPC
 
+// 1. Add this wrapper helper to make the Wallet types iterable
+struct WalletTypeWrapper: Identifiable {
+    let id: String
+    let walletType: any Wallet.Type
+    
+    init(_ walletType: any Wallet.Type) {
+        self.id = walletType.identifier
+        self.walletType = walletType
+    }
+}
+
 struct WalletRow: View {
     let wallet: any Wallet.Type
     let onConnect: () -> Void
@@ -11,7 +22,7 @@ struct WalletRow: View {
         Button(action: {
             isLoading = true
             Task {
-                await onConnect()
+                onConnect()
                 isLoading = false
             }
         }) {
@@ -79,10 +90,15 @@ struct WalletSelectionView: View {
                     
                     // Available Wallets List
                     VStack(spacing: 12) {
-                        ForEach(viewModel.walletManager.availableWallets, id: \.identifier) {
-                            wallet in
-                            WalletRow(wallet: wallet) {
-                                await handleWalletConnection(wallet)
+                        // 2. Map the wallets to the wrapper
+                        let wallets = viewModel.walletManager.availableWallets.map { WalletTypeWrapper($0) }
+                        
+                        // 3. Iterate over the wrapper
+                        ForEach(wallets) { wrapper in
+                            WalletRow(wallet: wrapper.walletType) {
+                                Task {
+                                    await handleWalletConnection(wrapper.walletType)
+                                }
                             }
                         }
                     }

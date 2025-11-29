@@ -328,7 +328,8 @@ struct WalletStatusCard: View {
             
             if !connectedWallets.isEmpty {
                 VStack(spacing: 4) {
-                    ForEach(connectedWallets, id: \.appId) { wallet in
+                    // FIX: Use indices or a computed ID to avoid complex KeyPath errors on 'any Wallet'
+                    ForEach(Array(connectedWallets.enumerated()), id: \.offset) { index, wallet in
                         HStack {
                             Text(String(describing: type(of: wallet)))
                                 .font(.subheadline)

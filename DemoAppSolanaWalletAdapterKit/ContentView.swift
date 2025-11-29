@@ -10,22 +10,22 @@ struct ContentView: View {
     @State private var showingWalletSelection: Bool = false
     
     // MARK: - Selected Wallet State
-    @State private var selectedWalletIndex: Int = 0
+    @State private var varselectedWalletIndex: Int = 0
     
     // MARK: - Disconnect Selection State
     @State private var showingDisconnectSelection: Bool = false
     @State private var selectedWalletsToDisconnect: Set<Int> = []
     
     private var selectedWallet: (any Wallet)? {
-        guard !viewModel.walletManager.connectedWallets.isEmpty,
-              viewModel.walletManager.connectedWallets.indices.contains(selectedWalletIndex) else {
+        guard !viewModel.connectedWallets.isEmpty,
+              viewModel.connectedWallets.indices.contains(selectedWalletIndex) else {
             return nil
         }
-        return viewModel.walletManager.connectedWallets[selectedWalletIndex]
+        return viewModel.connectedWallets[selectedWalletIndex]
     }
     
     private var connectedWallets: [any Wallet] {
-        viewModel.walletManager.connectedWallets
+        viewModel.connectedWallets
     }
     
     private var isSwitchEnabled: Bool {
@@ -199,6 +199,12 @@ struct ContentView: View {
             .navigationDestination(isPresented: $showingWalletSelection) {
                 WalletSelectionView()
             }
+            .onChange(of: showingWalletSelection) { oldValue, newValue in
+                if oldValue == true && newValue == false {
+                    // WalletSelectionView was dismissed, refresh connected wallets
+                    viewModel.updateConnectedWallets()
+                }
+            }
             .sheet(isPresented: $showingDisconnectSelection) {
                 DisconnectWalletSelectionView(
                     connectedWallets: connectedWallets,
@@ -220,6 +226,10 @@ struct ContentView: View {
             } message: {
                 Text(errorMessage ?? "")
             }
+            .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+                // Refresh wallet list when app comes to foreground
+                viewModel.updateConnectedWallets()
+            }
         }
         .environment(viewModel)
     }
@@ -227,6 +237,8 @@ struct ContentView: View {
     private func clearKeychain() {
         do {
             try viewModel.keychain.deleteAll()
+            // Force UI update after clearing keychain
+            viewModel.updateConnectedWallets()
         } catch {
             errorMessage = "Failed to clear keychain: \(error.localizedDescription)"
         }
@@ -260,9 +272,14 @@ struct ContentView: View {
             }
         }
         
-        // Reset selected wallet index if necessary
-        if selectedWalletIndex >= connectedWallets.count {
-            selectedWalletIndex = max(0, connectedWallets.count - 1)
+        // Force UI update after disconnecting wallets
+        await MainActor.run {
+            viewModel.updateConnectedWallets()
+            
+            // Reset selected wallet index if necessary
+            if selectedWalletIndex >= viewModel.connectedWallets.count {
+                selectedWalletIndex = max(0, viewModel.connectedWallets.count - 1)
+            }
         }
         
         selectedWalletsToDisconnect.removeAll()

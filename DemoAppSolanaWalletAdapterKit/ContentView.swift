@@ -1,11 +1,3 @@
-// Hello from the Demo Workflow
-//
-//  ContentView.swift
-//  DemoAppSolanaWalletAdapterKit
-//
-//  Created by Samuel Martineau on 2025-10-13.
-//
-
 import SwiftUI
 import SolanaWalletAdapterKit
 import SimpleKeychain
@@ -16,164 +8,441 @@ internal import Base58
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
+    @State private var isLoading: Bool = false
+    @State private var errorMessage: String?
     
     var body: some View {
         NavigationStack {
-            VStack{
-                Button("Pair Wallets") {
-                    showingWalletSelection = true
-                }
-                Button("Clear Keychain") {
-                    try! viewModel.keychain.deleteAll()
-                }
-                Button("Debug") {
-                    print(viewModel.walletManager.connectedWallets)
-                }
-                Button("Sign Transaction") {
-                    Task {
-                        do {
-                            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
-                            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
-                                                                                  blockhash: latestBlockhash) {
-                                SystemProgram.transfer(
-                                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
-                                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
-                                    lamports: 1_000_000_000)
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(spacing: 20) {
+                        // Connected Wallet Status Card
+                        WalletStatusCard(
+                            connectedWallets: viewModel.walletManager.connectedWallets,
+                            onConnect: { showingWalletSelection = true }
+                        )
+                        
+                        // Wallet Management Section
+                        DemoSection(title: "Wallet Management", icon: "wrench.and.screwdriver") {
+                            DemoButton(
+                                title: "Pair Wallets",
+                                icon: "link.circle.fill",
+                                style: .primary,
+                                isLoading: isLoading
+                            ) {
+                                showingWalletSelection = true
                             }
                             
-                            print(transaction)
-                            
-                            let response = try await viewModel.walletManager.connectedWallets[0].signTransaction(transaction: transaction,)
-                            
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
-                        }
-                    }
-                }
-                Button("Sign All Transactions") {
-                    Task {
-                        do {
-                            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
-                            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction1 = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!)
-                           , blockhash: latestBlockhash) {
-                                SystemProgram.transfer(
-                                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
-                                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
-                                    lamports: 1_000_000_000)
-                            }
-                            let transaction2 = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
-                                SystemProgram.transfer(
-                                    from: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
-                                    to: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
-                                    lamports: 100_000_000)
+                            DemoButton(
+                                title: "Clear Keychain",
+                                icon: "trash.circle.fill",
+                                style: .secondary,
+                                isLoading: false
+                            ) {
+                                clearKeychain()
                             }
                             
-                            let response = try await viewModel.walletManager.connectedWallets[0].signAllTransactions(transactions: [transaction1,transaction2])
-                            
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
+                            DemoButton(
+                                title: "Debug Info",
+                                icon: "info.circle.fill",
+                                style: .secondary,
+                                isLoading: false
+                            ) {
+                                print(viewModel.walletManager.connectedWallets)
+                            }
                         }
-                    }
-                }
-                Button("Sign And Send Transaction") {
-                    Task {
-                        do {
-                            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
-                            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
-                                SystemProgram.transfer(
-                                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
-                                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
-                                    lamports: 1_000_000_000)
+                        
+                        // Transaction Operations Section
+                        DemoSection(title: "Transaction Operations", icon: "doc.text.fill") {
+                            DemoButton(
+                                title: "Sign Transaction",
+                                icon: "signature",
+                                style: .primary,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await signTransaction()
+                                }
                             }
                             
-                            //                        Transaction(signatures: [1111111111111111111111111111111111111111111111111111111111111111], message: SolanaTransactions.VersionedMessage.legacyMessage(SolanaTransactions.LegacyMessage(signatureCount: 1, readOnlyAccounts: 0, readOnlyNonSigners: 1, accounts: [HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW, CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz, 11111111111111111111111111111111], blockhash: F2fGr4wB7fRPbHGNkRYpqpZnNcRmJgz4LxNJmEnHN926, instructions: [SolanaTransactions.CompiledInstruction(programIdIndex: 2, accounts: [0, 1], data: [2, 0, 0, 0, 0, 202, 154, 59, 0, 0, 0, 0])])))
-                            
-                            print(transaction)
-                            
-                            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
-                            
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
-                        }
-                    }
-                }
-                Button("Sign Message") {
-                    Task {
-                        do {
-                            let response = try await viewModel.walletManager.connectedWallets[0].signMessage(message: "Hello World!".data(using: .utf8)!, display: .utf8)
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
-                        }
-                    }
-                }
-                Button("Browse") {
-                    Task {
-                        do {
-                            let response: () = try await viewModel.walletManager.connectedWallets[0].browse(url: URL(string: "https://apple.com")!, ref: URL(string: "https://solshare.team")!)
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
-                        }
-                    }
-                }
-                Button("Send SOL to Phantom") {
-                    Task {
-                        do {
-                            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
-                            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
-                                SystemProgram.transfer(
-                                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
-                                    to: "Gz4m7AXonTJUSYcfJkHa8JLu6PuMwkj7BmAfFkqqKcis",
-                                    lamports: 1_000_000_000)
+                            DemoButton(
+                                title: "Sign All Transactions",
+                                icon: "list.bullet.rectangle.portrait.fill",
+                                style: .primary,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await signAllTransactions()
+                                }
                             }
                             
-                            print(transaction)
-                            
-                            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
-                            
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
+                            DemoButton(
+                                title: "Sign & Send Transaction",
+                                icon: "paperplane.fill",
+                                style: .primary,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await signAndSendTransaction()
+                                }
+                            }
                         }
-                    }
-                }
-                Button("Send SOL from Phantom") {
-                    Task {
-                        do {
-                            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
-                            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
-                                SystemProgram.transfer(
-                                    from: "Gz4m7AXonTJUSYcfJkHa8JLu6PuMwkj7BmAfFkqqKcis",
-                                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
-                                    lamports: 100_000_000)
+                        
+                        // Quick Send Section
+                        DemoSection(title: "Quick Send (DEVNET)", icon: "arrow.left.arrow.right.circle.fill") {
+                            DemoButton(
+                                title: "Send SOL to Phantom",
+                                icon: "arrow.up.circle.fill",
+                                style: .success,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await sendSOL(toPhantom: true)
+                                }
                             }
                             
-                            print(transaction)
+                            DemoButton(
+                                title: "Send SOL from Phantom",
+                                icon: "arrow.down.circle.fill",
+                                style: .success,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await sendSOL(toPhantom: false)
+                                }
+                            }
+                        }
+                        
+                        // Other Operations Section
+                        DemoSection(title: "Other Operations", icon: "gear.circle.fill") {
+                            DemoButton(
+                                title: "Sign Message",
+                                icon: "envelope.fill",
+                                style: .secondary,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await signMessage()
+                                }
+                            }
                             
-                            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
-                            
-                            print(response)
-                        } catch {
-                            print("Caught error: \(error)")
+                            DemoButton(
+                                title: "Browse URL",
+                                icon: "safari.fill",
+                                style: .secondary,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await browseURL()
+                                }
+                            }
                         }
                     }
+                    .padding()
+                    .frame(maxWidth: geometry.size.width > 600 ? 600 : .infinity)
                 }
             }
-            .navigationTitle("SolanaWalletAdapterKit Demo")
-            .navigationBarTitleDisplayMode(.inline)
+            .background(LinearGradient(
+                gradient: Gradient(colors: [Color(.systemBackground).opacity(0.8), Color(.systemBackground)]),
+                startPoint: .top,
+                endPoint: .bottom
+            ))
+            .navigationTitle("Solana Wallet Demo")
+            .navigationBarTitleDisplayMode(.large)
             .navigationDestination(isPresented: $showingWalletSelection) {
                 WalletSelectionView()
             }
-        }.environment(viewModel)
+            .alert("Error", isPresented: .constant(errorMessage != nil)) {
+                Button("OK") {
+                    errorMessage = nil
+                }
+            } message: {
+                Text(errorMessage ?? "")
+            }
+        }
+        .environment(viewModel)
+    }
+    
+    private func clearKeychain() {
+        do {
+            try viewModel.keychain.deleteAll()
+        } catch {
+            errorMessage = "Failed to clear keychain: \(error.localizedDescription)"
+        }
+    }
+    
+    private func signTransaction() async {
+        isLoading = true
+        do {
+            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
+            let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
+            let transaction = try SolanaTransactions.Transaction(
+                feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                blockhash: latestBlockhash
+            ) {
+                SystemProgram.transfer(
+                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
+                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
+                    lamports: 1_000_000_000
+                )
+            }
+            
+            let response = try await viewModel.walletManager.connectedWallets[0].signTransaction(transaction: transaction)
+            print(response)
+        } catch {
+            errorMessage = "Transaction signing failed: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+    
+    private func signAllTransactions() async {
+        isLoading = true
+        do {
+            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
+            let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
+            let transaction1 = try SolanaTransactions.Transaction(
+                feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                blockhash: latestBlockhash
+            ) {
+                SystemProgram.transfer(
+                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
+                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
+                    lamports: 1_000_000_000
+                )
+            }
+            let transaction2 = try SolanaTransactions.Transaction(
+                feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                blockhash: latestBlockhash
+            ) {
+                SystemProgram.transfer(
+                    from: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
+                    to: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
+                    lamports: 100_000_000
+                )
+            }
+            
+            let response = try await viewModel.walletManager.connectedWallets[0].signAllTransactions(transactions: [transaction1, transaction2])
+            print(response)
+        } catch {
+            errorMessage = "All transactions signing failed: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+    
+    private func signAndSendTransaction() async {
+        isLoading = true
+        do {
+            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
+            let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
+            let transaction = try SolanaTransactions.Transaction(
+                feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                blockhash: latestBlockhash
+            ) {
+                SystemProgram.transfer(
+                    from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
+                    to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
+                    lamports: 1_000_000_000
+                )
+            }
+            
+            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
+            print(response)
+        } catch {
+            errorMessage = "Transaction signing and sending failed: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+    
+    private func signMessage() async {
+        isLoading = true
+        do {
+            let response = try await viewModel.walletManager.connectedWallets[0].signMessage(
+                message: "Hello World!".data(using: .utf8)!,
+                display: .utf8
+            )
+            print(response)
+        } catch {
+            errorMessage = "Message signing failed: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+    
+    private func browseURL() async {
+        isLoading = true
+        do {
+            let response: () = try await viewModel.walletManager.connectedWallets[0].browse(
+                url: URL(string: "https://apple.com")!,
+                ref: URL(string: "https://solshare.team")!
+            )
+            print(response)
+        } catch {
+            errorMessage = "Browse operation failed: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+    
+    private func sendSOL(toPhantom: Bool) async {
+        isLoading = true
+        do {
+            let solanaRPC = SolanaRPCClient(endpoint: .devnet)
+            let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
+            let transaction = try SolanaTransactions.Transaction(
+                feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                blockhash: latestBlockhash
+            ) {
+                SystemProgram.transfer(
+                    from: toPhantom ? "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW" : "Gz4m7AXonTJUSYcfJkHa8JLu6PuMwkj7BmAfFkqqKcis",
+                    to: toPhantom ? "Gz4m7AXonTJUSYcfJkHa8JLu6PuMwkj7BmAfFkqqKcis" : "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
+                    lamports: toPhantom ? 1_000_000_000 : 100_000_000
+                )
+            }
+            
+            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
+            print(response)
+        } catch {
+            errorMessage = "SOL transfer failed: \(error.localizedDescription)"
+        }
+        isLoading = false
+    }
+}
+
+// MARK: - Card Components
+
+struct WalletStatusCard: View {
+    let connectedWallets: [any Wallet]
+    let onConnect: () -> Void
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: connectedWallets.isEmpty ? "wallet.pass" : "checkmark.circle.fill")
+                    .foregroundColor(connectedWallets.isEmpty ? .gray : .green)
+                    .font(.title2)
+                
+                Text(connectedWallets.isEmpty ? "No Wallet Connected" : "Wallet Connected")
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                
+                Spacer()
+            }
+            
+            if !connectedWallets.isEmpty {
+                VStack(spacing: 4) {
+                    ForEach(connectedWallets, id: \.appId) { wallet in
+                        HStack {
+                            Text(String(describing: type(of: wallet)))
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                        }
+                    }
+                }
+            }
+            
+            Button(action: onConnect) {
+                HStack {
+                    Image(systemName: "link.circle.fill")
+                        .font(.title3)
+                    Text(connectedWallets.isEmpty ? "Connect Wallet" : "Switch Wallet")
+                        .font(.subheadline.bold())
+                }
+                .foregroundColor(.white)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(Color.purple)
+                .cornerRadius(10)
+            }
+        }
+        .padding()
+        .background(Color(.systemBackground))
+        .cornerRadius(15)
+        .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+    }
+}
+
+struct DemoSection<Content: View>: View {
+    let title: String
+    let icon: String
+    let content: Content
+    
+    init(title: String, icon: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.icon = icon
+        self.content = content()
+    }
+    
+    var body: some View {
+        VStack(spacing: 12) {
+            HStack {
+                Image(systemName: icon)
+                    .foregroundColor(.purple)
+                    .font(.title3)
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                Spacer()
+            }
+            
+            VStack(spacing: 12) {
+                content
+            }
+        }
+        .padding()
+        .background(Color(.secondarySystemBackground))
+        .cornerRadius(15)
+    }
+}
+
+enum DemoButtonStyle {
+    case primary
+    case secondary
+    case success
+}
+
+struct DemoButton: View {
+    let title: String
+    let icon: String
+    let style: DemoButtonStyle
+    let isLoading: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                if isLoading {
+                    ProgressView()
+                        .scaleEffect(0.8)
+                        .frame(width: 20, height: 20)
+                } else {
+                    Image(systemName: icon)
+                        .font(.callout)
+                }
+                Text(title)
+                    .font(.subheadline)
+                    .bold()
+                Spacer()
+            }
+            .foregroundColor(isLoading ? .primary : .white)
+            .padding(.vertical, 14)
+            .padding(.horizontal, 16)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(backgroundColor)
+                    .opacity(isLoading ? 0.6 : 1)
+            )
+        }
+        .disabled(isLoading)
+    }
+    
+    private var backgroundColor: Color {
+        switch style {
+        case .primary:
+            return Color.purple
+        case .secondary:
+            return Color.gray
+        case .success:
+            return Color.green
+        }
     }
 }
 

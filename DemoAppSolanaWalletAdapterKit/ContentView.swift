@@ -8,6 +8,37 @@ internal import Base58
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
+    
+    // MARK: - Selected Wallet State
+    @State private var selectedWalletIndex: Int = 0
+    
+    private var selectedWallet: (any Wallet)? {
+        guard !viewModel.walletManager.connectedWallets.isEmpty,
+              viewModel.walletManager.connectedWallets.indices.contains(selectedWalletIndex) else {
+            return nil
+        }
+        return viewModel.walletManager.connectedWallets[selectedWalletIndex]
+    }
+    
+    private var connectedWallets: [any Wallet] {
+        viewModel.walletManager.connectedWallets
+    }
+    
+    private var isSwitchEnabled: Bool {
+        connectedWallets.count >= 2
+    }
+    
+    private func formatWalletDisplay(_ wallet: any Wallet) -> String {
+        let provider = String(describing: type(of: wallet))
+        if let publicKey = wallet.publicKey {
+            let publicKeyString = publicKey.base58EncodedString
+            let shortKey = publicKeyString.prefix(3) + "…" + publicKeyString.suffix(3)
+            return "\(provider) wallet: \(shortKey)"
+        } else {
+            return "\(provider) wallet: unknown"
+        }
+    }
+    
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     
@@ -18,8 +49,11 @@ struct ContentView: View {
                     VStack(spacing: 20) {
                         // Connected Wallet Status Card
                         WalletStatusCard(
-                            connectedWallets: viewModel.walletManager.connectedWallets,
-                            onConnect: { showingWalletSelection = true }
+                            connectedWallets: connectedWallets,
+                            selectedWalletIndex: $selectedWalletIndex,
+                            onSelectWallet: { index in
+                                selectedWalletIndex = index
+                            }
                         )
                         
                         // Wallet Management Section
@@ -198,11 +232,20 @@ struct ContentView: View {
                 errorMessage = "Failed to disconnect wallet: \(error.localizedDescription)"
             }
         }
+        
+        // Reset selected wallet index after disconnecting all
+        selectedWalletIndex = 0
     }
     
     private func signTransaction() async {
         isLoading = true
         do {
+            guard let wallet = selectedWallet else {
+                errorMessage = "No wallet selected."
+                isLoading = false
+                return
+            }
+            
             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
             let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
             let transaction = try SolanaTransactions.Transaction(
@@ -216,7 +259,7 @@ struct ContentView: View {
                 )
             }
             
-            let response = try await viewModel.walletManager.connectedWallets[0].signTransaction(transaction: transaction)
+            let response = try await wallet.signTransaction(transaction: transaction)
             print(response)
         } catch {
             errorMessage = "Transaction signing failed: \(error.localizedDescription)"
@@ -227,6 +270,12 @@ struct ContentView: View {
     private func signAllTransactions() async {
         isLoading = true
         do {
+            guard let wallet = selectedWallet else {
+                errorMessage = "No wallet selected."
+                isLoading = false
+                return
+            }
+            
             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
             let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
             let transaction1 = try SolanaTransactions.Transaction(
@@ -250,7 +299,7 @@ struct ContentView: View {
                 )
             }
             
-            let response = try await viewModel.walletManager.connectedWallets[0].signAllTransactions(transactions: [transaction1, transaction2])
+            let response = try await wallet.signAllTransactions(transactions: [transaction1, transaction2])
             print(response)
         } catch {
             errorMessage = "All transactions signing failed: \(error.localizedDescription)"
@@ -261,6 +310,12 @@ struct ContentView: View {
     private func signAndSendTransaction() async {
         isLoading = true
         do {
+            guard let wallet = selectedWallet else {
+                errorMessage = "No wallet selected."
+                isLoading = false
+                return
+            }
+            
             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
             let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
             let transaction = try SolanaTransactions.Transaction(
@@ -274,7 +329,7 @@ struct ContentView: View {
                 )
             }
             
-            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
+            let response = try await wallet.signAndSendTransaction(transaction: transaction, sendOptions: nil)
             print(response)
         } catch {
             errorMessage = "Transaction signing and sending failed: \(error.localizedDescription)"
@@ -285,7 +340,13 @@ struct ContentView: View {
     private func signMessage() async {
         isLoading = true
         do {
-            let response = try await viewModel.walletManager.connectedWallets[0].signMessage(
+            guard let wallet = selectedWallet else {
+                errorMessage = "No wallet selected."
+                isLoading = false
+                return
+            }
+            
+            let response = try await wallet.signMessage(
                 message: "Hello World!".data(using: .utf8)!,
                 display: .utf8
             )
@@ -299,7 +360,13 @@ struct ContentView: View {
     private func browseURL() async {
         isLoading = true
         do {
-            let response: () = try await viewModel.walletManager.connectedWallets[0].browse(
+            guard let wallet = selectedWallet else {
+                errorMessage = "No wallet selected."
+                isLoading = false
+                return
+            }
+            
+            let response: () = try await wallet.browse(
                 url: URL(string: "https://apple.com")!,
                 ref: URL(string: "https://solshare.team")!
             )
@@ -313,6 +380,12 @@ struct ContentView: View {
     private func sendSOL(toPhantom: Bool) async {
         isLoading = true
         do {
+            guard let wallet = selectedWallet else {
+                errorMessage = "No wallet selected."
+                isLoading = false
+                return
+            }
+            
             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
             let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
             let transaction = try SolanaTransactions.Transaction(
@@ -326,7 +399,7 @@ struct ContentView: View {
                 )
             }
             
-            let response = try await viewModel.walletManager.connectedWallets[0].signAndSendTransaction(transaction: transaction, sendOptions: nil)
+            let response = try await wallet.signAndSendTransaction(transaction: transaction, sendOptions: nil)
             print(response)
         } catch {
             errorMessage = "SOL transfer failed: \(error.localizedDescription)"
@@ -335,11 +408,23 @@ struct ContentView: View {
     }
 }
 
-// MARK: - Card Components
+// MARK: - Wallet Status Card
 
 struct WalletStatusCard: View {
     let connectedWallets: [any Wallet]
-    let onConnect: () -> Void
+    @Binding var selectedWalletIndex: Int
+    let onSelectWallet: (Int) -> Void
+    
+    private func formatWalletDisplay(_ wallet: any Wallet) -> String {
+        let provider = String(describing: type(of: wallet))
+        if let publicKey = wallet.publicKey {
+            let publicKeyString = publicKey.base58EncodedString
+            let shortKey = publicKeyString.prefix(3) + "…" + publicKeyString.suffix(3)
+            return "\(provider) wallet: \(shortKey)"
+        } else {
+            return "\(provider) wallet: unknown"
+        }
+    }
     
     var body: some View {
         VStack(spacing: 12) {
@@ -357,30 +442,75 @@ struct WalletStatusCard: View {
             
             if !connectedWallets.isEmpty {
                 VStack(spacing: 4) {
-                    // FIX: Use indices or a computed ID to avoid complex KeyPath errors on 'any Wallet'
                     ForEach(Array(connectedWallets.enumerated()), id: \.offset) { index, wallet in
                         HStack {
-                            Text(String(describing: type(of: wallet)))
+                            Text(formatWalletDisplay(wallet))
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
+                            
+                            if index == selectedWalletIndex {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.blue)
+                                    .font(.caption)
+                            }
+                            
                             Spacer()
                         }
                     }
                 }
             }
             
-            Button(action: onConnect) {
-                HStack {
-                    Image(systemName: "link.circle.fill")
-                        .font(.title3)
-                    Text(connectedWallets.isEmpty ? "Connect Wallet" : "Switch Wallet")
-                        .font(.subheadline.bold())
+            // Switch Wallet Button - grayed out when ≤1 wallet, dropdown when ≥2 wallets
+            if !isSwitchEnabled {
+                Button(action: {}) {
+                    HStack {
+                        Image(systemName: "arrow.left.arrow.right.circle.fill")
+                            .font(.title3)
+                        Text("Switch Wallet")
+                            .font(.subheadline.bold())
+                    }
                 }
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 12)
-                .background(Color.purple)
+                .background(Color.gray.opacity(0.5))
                 .cornerRadius(10)
+                .disabled(true)
+            } else {
+                Menu {
+                    ForEach(Array(connectedWallets.enumerated()), id: \.offset) { index, wallet in
+                        Button(action: {
+                            onSelectWallet(index)
+                        }) {
+                            HStack {
+                                Text(formatWalletDisplay(wallet))
+                                    .font(.subheadline)
+                                
+                                if index == selectedWalletIndex {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(.blue)
+                                }
+                                
+                                Spacer()
+                            }
+                        }
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: "arrow.left.arrow.right.circle.fill")
+                            .font(.title3)
+                        Text("Switch Wallet")
+                            .font(.subheadline.bold())
+                        
+                        Image(systemName: "chevron.down")
+                            .font(.caption)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .background(Color.purple)
+                    .cornerRadius(10)
+                }
             }
         }
         .padding()
@@ -388,7 +518,13 @@ struct WalletStatusCard: View {
         .cornerRadius(15)
         .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
     }
+    
+    private var isSwitchEnabled: Bool {
+        connectedWallets.count >= 2
+    }
 }
+
+// MARK: - Demo Section
 
 struct DemoSection<Content: View>: View {
     let title: String
@@ -422,6 +558,8 @@ struct DemoSection<Content: View>: View {
         .cornerRadius(15)
     }
 }
+
+// MARK: - Demo Button
 
 enum DemoButtonStyle {
     case primary
@@ -478,6 +616,8 @@ struct DemoButton: View {
         }
     }
 }
+
+// MARK: - Preview
 
 #Preview {
     ContentView()

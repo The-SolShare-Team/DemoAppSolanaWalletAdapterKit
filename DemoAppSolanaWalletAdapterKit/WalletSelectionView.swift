@@ -63,7 +63,7 @@ struct WalletSelectionView: View {
     }
     
     private func handleWalletConnection(_ wallet: any Wallet.Type) async throws {
-        try await viewModel.walletManager.pair(wallet, for: viewModel.appId, cluster: viewModel.cluster)
+        let _ = try await viewModel.walletManager.pair(wallet, for: viewModel.appId, cluster: viewModel.cluster)
         dismiss()
     }
 }

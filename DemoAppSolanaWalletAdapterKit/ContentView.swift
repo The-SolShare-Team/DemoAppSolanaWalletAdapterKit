@@ -11,6 +11,7 @@ import SolanaWalletAdapterKit
 import SimpleKeychain
 import SolanaTransactions
 import SolanaRPC
+internal import Base58
 
 struct ContentView: View {
     @State private var viewModel = ViewModel()
@@ -33,7 +34,8 @@ struct ContentView: View {
                         do {
                             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
                             let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!),
+                                                                                  blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
                                     to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
@@ -55,13 +57,14 @@ struct ContentView: View {
                         do {
                             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
                             let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction1 = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction1 = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!)
+                           , blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
                                     to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
                                     lamports: 1_000_000_000)
                             }
-                            let transaction2 = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction2 = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
                                     to: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
@@ -81,7 +84,7 @@ struct ContentView: View {
                         do {
                             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
                             let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
                                     to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",
@@ -113,7 +116,7 @@ struct ContentView: View {
                 Button("Browse") {
                     Task {
                         do {
-                            let response = try await viewModel.walletManager.connectedWallets[0].browse(url: URL(string: "https://apple.com")!, ref: URL(string: "https://solshare.team")!)
+                            let response: () = try await viewModel.walletManager.connectedWallets[0].browse(url: URL(string: "https://apple.com")!, ref: URL(string: "https://solshare.team")!)
                             print(response)
                         } catch {
                             print("Caught error: \(error)")
@@ -125,7 +128,7 @@ struct ContentView: View {
                         do {
                             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
                             let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW",
                                     to: "Gz4m7AXonTJUSYcfJkHa8JLu6PuMwkj7BmAfFkqqKcis",
@@ -147,7 +150,7 @@ struct ContentView: View {
                         do {
                             let solanaRPC = SolanaRPCClient(endpoint: .devnet)
                             let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-                            let transaction = try! SolanaTransactions.Transaction(blockhash: latestBlockhash) {
+                            let transaction = try! SolanaTransactions.Transaction(feePayer: PublicKey(bytes: Data(base58Encoded: "HL94zgjvNNYNvxTWDz2UicxmU24PtmtLghsBkQEhCYSW")!), blockhash: latestBlockhash) {
                                 SystemProgram.transfer(
                                     from: "Gz4m7AXonTJUSYcfJkHa8JLu6PuMwkj7BmAfFkqqKcis",
                                     to: "CjwgwZHiWUNokw4Xu8fYs6VPw8KYkeADBS9Y2LQVUeiz",

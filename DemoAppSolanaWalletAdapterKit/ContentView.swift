@@ -31,7 +31,7 @@ struct ContentView: View {
     private func formatWalletDisplay(_ wallet: any Wallet) -> String {
         let provider = String(describing: type(of: wallet))
         if let publicKey = wallet.publicKey {
-            let publicKeyString = publicKey.base58EncodedString
+            let publicKeyString = publicKey.description
             let shortKey = publicKeyString.prefix(3) + "…" + publicKeyString.suffix(3)
             return "\(provider) wallet: \(shortKey)"
         } else {
@@ -418,7 +418,7 @@ struct WalletStatusCard: View {
     private func formatWalletDisplay(_ wallet: any Wallet) -> String {
         let provider = String(describing: type(of: wallet))
         if let publicKey = wallet.publicKey {
-            let publicKeyString = publicKey.base58EncodedString
+            let publicKeyString = publicKey.description
             let shortKey = publicKeyString.prefix(3) + "…" + publicKeyString.suffix(3)
             return "\(provider) wallet: \(shortKey)"
         } else {

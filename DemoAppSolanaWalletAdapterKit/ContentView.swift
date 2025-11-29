@@ -50,6 +50,17 @@ struct ContentView: View {
                             ) {
                                 print(viewModel.walletManager.connectedWallets)
                             }
+                            
+                            DemoButton(
+                                title: "Disconnect Wallets",
+                                icon: "xmark.circle.fill",
+                                style: .danger,
+                                isLoading: isLoading
+                            ) {
+                                Task {
+                                    await disconnectAllWallets()
+                                }
+                            }
                         }
                         
                         // Transaction Operations Section
@@ -168,6 +179,24 @@ struct ContentView: View {
             try viewModel.keychain.deleteAll()
         } catch {
             errorMessage = "Failed to clear keychain: \(error.localizedDescription)"
+        }
+    }
+    
+    private func disconnectAllWallets() async {
+        isLoading = true
+        defer { isLoading = false }
+        
+        // Make a copy of the connected wallets since unpair mutates the array
+        let walletsToDisconnect = viewModel.walletManager.connectedWallets
+        
+        for var wallet in walletsToDisconnect {
+            do {
+                try await viewModel.walletManager.unpair(&wallet)
+                print("✅ Successfully disconnected \(type(of: wallet))")
+            } catch {
+                print("❌ Failed to disconnect wallet: \(error)")
+                errorMessage = "Failed to disconnect wallet: \(error.localizedDescription)"
+            }
         }
     }
     
@@ -398,6 +427,7 @@ enum DemoButtonStyle {
     case primary
     case secondary
     case success
+    case danger
 }
 
 struct DemoButton: View {
@@ -443,6 +473,8 @@ struct DemoButton: View {
             return Color.gray
         case .success:
             return Color.green
+        case .danger:
+            return Color(red: 1.0, green: 0.3, blue: 0.3)
         }
     }
 }

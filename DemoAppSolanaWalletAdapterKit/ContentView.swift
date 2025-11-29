@@ -8,7 +8,6 @@ internal import Base58
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
-    
     // MARK: - Selected Wallet State
     @State private var selectedWalletIndex: Int = 0
     
@@ -25,7 +24,7 @@ struct ContentView: View {
     }
     
     private var connectedWallets: [any Wallet] {
-        viewModel.walletManager.connectedWallets
+        viewModel.wallets
     }
     
     private var isSwitchEnabled: Bool {
@@ -252,7 +251,7 @@ struct ContentView: View {
         
         for var wallet in walletsToDisconnect {
             do {
-                try await viewModel.walletManager.unpair(&wallet)
+                try await viewModel.disconnect(&wallet)
                 print("✅ Successfully disconnected \(type(of: wallet))")
             } catch {
                 print("❌ Failed to disconnect wallet: \(error)")

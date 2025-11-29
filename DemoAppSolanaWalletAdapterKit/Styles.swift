@@ -1,25 +1,7 @@
-//
-//  styles.swift
-//  DemoAppSolanaWalletAdapterKit
-//
-//  Created by William Jin on 2025-10-15.
-//
-
 // A convenient place to put styles to avoid clutter in demo app functional views
 
 import Foundation
 import SwiftUI
-
-//// Make a view fill the whole screen with background black (better on my eyes)
-//extension View {
-//    func blackScreenStyle() -> some View {
-//        ZStack {
-//            Color.black.ignoresSafeArea()
-//            self
-//        }
-//    }
-//}
-
 
 // Connect to wallet button styles
 struct WalletButtonStyle: ButtonStyle {
@@ -40,36 +22,34 @@ extension View {
     }
 }
 
-
 // Wallet icon style when opening wallet selection UI
 extension Image {
     func walletIconStyle() -> some View {
         self
             .resizable()
             .frame(width: 40, height: 40)
-            .foregroundColor(.blue)
+            .foregroundColor(.purple)
     }
 }
-
 
 // Styles for the individual wallet row components
 extension View {
     func walletNameStyle() -> some View {
         self
             .font(.headline)
-            .foregroundColor(Color.white)
-        }
-        
+            .foregroundColor(Color.primary)
+    }
+    
     func detectedTextStyle() -> some View {
         self
             .font(.subheadline)
             .foregroundColor(.green)
     }
     func walletRowBackground() -> some View {
-            self
-                .padding()
-                .background(Color.gray.opacity(0.1))
-                .cornerRadius(10)
+        self
+            .padding()
+            .background(Color.gray.opacity(0.1))
+            .cornerRadius(10)
     }
     func plainButtonStyle() -> some View {
         self
@@ -82,9 +62,51 @@ extension View {
     func connectTextStyle() -> some View {
         self
             .font(.title)
-            .foregroundStyle(Color.white)
+            .foregroundColor(Color.primary)
             .padding()
     }
 }
 
+// Additional card styles
+extension View {
+    func cardStyle(backgroundColor: Color = Color(.systemBackground)) -> some View {
+        self
+            .padding()
+            .background(backgroundColor)
+            .cornerRadius(15)
+            .shadow(color: Color.black.opacity(0.05), radius: 3, x: 0, y: 2)
+    }
+    
+    func sectionCardStyle() -> some View {
+        self
+            .padding()
+            .background(Color(.secondarySystemBackground))
+            .cornerRadius(15)
+    }
+}
 
+// Status indicator styles
+extension View {
+    func statusDotStyle(color: Color) -> some View {
+        self
+            .frame(width: 8, height: 8)
+            .background(color)
+            .clipShape(Circle())
+    }
+}
+
+// Loading overlay style
+extension View {
+    func loadingOverlay(isLoading: Bool) -> some View {
+        self
+            .overlay(
+                Group {
+                    if isLoading {
+                        Color.black.opacity(0.1)
+                        ProgressView()
+                            .scaleEffect(1.2)
+                    }
+                }
+            )
+    }
+}

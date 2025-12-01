@@ -36,7 +36,7 @@ struct WalletRow: View {
 
 struct WalletSelectionView: View {
     @Environment(\.dismiss) var dismiss
-    @Environment(ContentView.ViewModel.self) var viewModel
+    @Environment(ViewModel.self) var viewModel
     
     var availableWallets: [String] {
         viewModel.walletManager.availableWallets.map { $0.identifier }

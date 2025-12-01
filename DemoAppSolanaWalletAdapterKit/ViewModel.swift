@@ -5,11 +5,11 @@
 //  Created by Dang Khoa Chiem on 2025-11-06.
 //
 
-import SwiftUI
-import SolanaWalletAdapterKit
-import SolanaRPC
 import SimpleKeychain
+import SolanaRPC
 import SolanaTransactions
+import SolanaWalletAdapterKit
+import SwiftUI
 
 @Observable
 class ViewModel {
@@ -20,62 +20,43 @@ class ViewModel {
     )
     let cluster = Endpoint.devnet
     let solanaRPC = SolanaRPCClient(endpoint: .devnet)
-    
+
     let keychain: SimpleKeychain
-    let walletManager: WalletConnectionManager
-    
-    var selectedWalletIndex: Int = -1
+    var walletManager: WalletConnectionManager
+
+    var selectedPublicKey: PublicKey? = nil
 
     init() {
         keychain = SimpleKeychain()
         walletManager = WalletConnectionManager(storage: KeychainStorage(keychain))
-        
+
         Task { [weak self] in
             try await self?.walletManager.recoverWallets()
         }
     }
-    
-    func signAndSendTransaction(fromAccount: String, toAccount: String, lamportsAmount: String) async throws {
-        do {
-            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-            let transaction = try! SolanaTransactions.Transaction(
-                feePayer: PublicKey(string: fromAccount)!,
-                blockhash: latestBlockhash) {
-                SystemProgram.transfer(
-                    from: PublicKey(string: fromAccount)!,
-                    to: PublicKey(string: toAccount)!,
-                    lamports: Int64(lamportsAmount)!)
-            }
-            
-            let response = try await walletManager.connectedWallets[selectedWalletIndex].signAndSendTransaction(
-                transaction: transaction,
-                sendOptions: nil)
-            
-            print(response)
-            
-        } catch {
-            print("Caught error: \(error)")
+
+    func signTransaction(toAccount: PublicKey, lamportsAmount: Int64, send: Bool) async throws -> String? {
+        guard let selectedPublicKey = selectedPublicKey,
+            let selectedWallet = walletManager.connectedWallets[selectedPublicKey]
+        else { return nil }
+
+        let latestBlockhash = try await solanaRPC.getLatestBlockhash().blockhash
+        let transaction = try SolanaTransactions.Transaction(
+            feePayer: selectedPublicKey,
+            blockhash: latestBlockhash
+        ) {
+            SystemProgram.transfer(
+                from: selectedPublicKey,
+                to: toAccount,
+                lamports: lamportsAmount)
         }
-    }
-    
-    func signTransaction(fromAccount: String, toAccount: String, lamportsAmount: String) async throws {
-        do {
-            let latestBlockhash = try! await solanaRPC.getLatestBlockhash().blockhash
-            let transaction = try! SolanaTransactions.Transaction(
-                feePayer: PublicKey(string: fromAccount)!,
-                blockhash: latestBlockhash) {
-                SystemProgram.transfer(
-                    from: PublicKey(string: fromAccount)!,
-                    to: PublicKey(string: toAccount)!,
-                    lamports: Int64(lamportsAmount)!)
-            }
-            
-            let response = try await walletManager.connectedWallets[selectedWalletIndex].signTransaction(transaction: transaction)
-            
-            print(response)
-            
-        } catch {
-            print("Caught error: \(error)")
+
+        if send {
+            let response = try await selectedWallet.signAndSendTransaction(transaction: transaction, sendOptions: nil)
+            return String(describing: response.signature)
+        } else {
+            let response = try await selectedWallet.signTransaction(transaction: transaction)
+            return String(describing: response.transaction)
         }
     }
 }

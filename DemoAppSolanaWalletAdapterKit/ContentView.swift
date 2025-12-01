@@ -5,55 +5,63 @@
 //  Created by Samuel Martineau on 2025-10-13.
 //
 
-import SwiftUI
-import SolanaWalletAdapterKit
 import SimpleKeychain
-import SolanaTransactions
 import SolanaRPC
+import SolanaTransactions
+import SolanaWalletAdapterKit
+import SwiftUI
+import UIKit
 
 struct ContentView: View {
     @State private var viewModel = ViewModel()
     @State private var showingWalletSelection: Bool = false
-    
+
     var body: some View {
         NavigationStack {
-            VStack{
+            VStack {
                 Button("Pair Wallets") {
                     showingWalletSelection = true
                 }.padding()
-                
+
                 Button("Clear Keychain") {
                     try! viewModel.keychain.deleteAll()
                 }.padding()
-                
+
                 NavigationLink("Sign and Send Transaction") {
-                    SignAndSendTransactionView(viewModel: viewModel)
+                    TransactionFormView(title: "Sign and Send Transaction", selectedPublicKey: viewModel.selectedPublicKey) { pk, lam in
+                        try await viewModel.signTransaction(toAccount: pk, lamportsAmount: lam, send: true)
+                    }
                 }
                 .padding()
-                
+
                 NavigationLink("Sign Transaction") {
-                    SignTransactionView(viewModel: viewModel)
+                    TransactionFormView(title: "Sign Transaction", selectedPublicKey: viewModel.selectedPublicKey) { pk, lam in
+                        try await viewModel.signTransaction(toAccount: pk, lamportsAmount: lam, send: false)
+                    }
                 }
                 .padding()
-                
-                List(viewModel.walletManager.connectedWallets.indices, id: \.self) { i in
-                    let wallet = viewModel.walletManager.connectedWallets[i]
+
+                List(viewModel.walletManager.connectedWallets.keys.sorted(), id: \.self) { publicKey in
                     HStack {
-                        if let key = wallet.publicKey {
-                            Text(String(describing: key))
-                        } else {
-                            Text("No public key")
-                        }
+                        Text(String(describing: publicKey))
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                            .textSelection(.enabled)
                         Spacer()
-                        if viewModel.selectedWalletIndex == i {
+                        if viewModel.selectedPublicKey == publicKey {
                             Image(systemName: "checkmark")
                                 .foregroundColor(.blue)
                         }
                     }
                     .contentShape(Rectangle())
                     .onTapGesture {
-                        viewModel.selectedWalletIndex = i
+                        viewModel.selectedPublicKey = publicKey
                     }
+                    // .contextMenu {
+                    //     Button("Copy") {
+                    //         UIPasteboard.general.string = publicKey.description
+                    //     }
+                    // }
                 }
 
             }

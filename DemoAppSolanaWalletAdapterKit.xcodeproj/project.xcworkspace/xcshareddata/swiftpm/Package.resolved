@@ -1,5 +1,5 @@
 {
-  "originHash" : "6770c248c7e9764f099668f8501a7a484fb06560541ea794b90a682eb8723fa5",
+  "originHash" : "294ea14f3a5c4521814c8c4850aab0e9f786d8664ee51b474b9d4e33951ac1f9",
   "pins" : [
     {
       "identity" : "salkt.swift",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "776c4a6db74d5c6c143974be91c383680d468630",
         "version" : "1.3.0"
+      }
+    },
+    {
+      "identity" : "solanawalletadapterkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/The-SolShare-Team/SolanaWalletAdapterKit",
+      "state" : {
+        "revision" : "7a70a32aa27dbc7a8d2b27af1ed5a0d12768d1da",
+        "version" : "0.1.0"
       }
     },
     {

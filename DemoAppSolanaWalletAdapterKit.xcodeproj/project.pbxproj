@@ -114,7 +114,7 @@
 			mainGroup = 7DAF20952E9DCB7F00D0F040;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */,
+				19FBF6392EDD6DCA0002D3F5 /* XCRemoteSwiftPackageReference "SolanaWalletAdapterKit" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7DAF209F2E9DCB7F00D0F040 /* Products */;
@@ -273,7 +273,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R3RV3ZH2AV;
+				DEVELOPMENT_TEAM = Q3A2RQ4KSL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
@@ -306,7 +306,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = R3RV3ZH2AV;
+				DEVELOPMENT_TEAM = Q3A2RQ4KSL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DemoAppSolanaWalletAdapterKit/Info.plist;
@@ -355,12 +355,16 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		7DAF20AC2E9DCB9500D0F040 /* XCLocalSwiftPackageReference "../SolanaWalletAdapterKit" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../SolanaWalletAdapterKit;
+/* Begin XCRemoteSwiftPackageReference section */
+		19FBF6392EDD6DCA0002D3F5 /* XCRemoteSwiftPackageReference "SolanaWalletAdapterKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/The-SolShare-Team/SolanaWalletAdapterKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.0;
+			};
 		};
-/* End XCLocalSwiftPackageReference section */
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		7DAF20AD2E9DCB9500D0F040 /* SolanaWalletAdapterKit */ = {

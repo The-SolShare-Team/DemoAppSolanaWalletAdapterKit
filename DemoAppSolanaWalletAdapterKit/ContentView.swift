@@ -10,7 +10,6 @@ import SolanaRPC
 import SolanaTransactions
 import SolanaWalletAdapterKit
 import SwiftUI
-import UIKit
 
 struct ContentView: View {
     @State private var viewModel = ViewModel()
@@ -57,11 +56,6 @@ struct ContentView: View {
                     .onTapGesture {
                         viewModel.selectedPublicKey = publicKey
                     }
-                    // .contextMenu {
-                    //     Button("Copy") {
-                    //         UIPasteboard.general.string = publicKey.description
-                    //     }
-                    // }
                 }
 
             }

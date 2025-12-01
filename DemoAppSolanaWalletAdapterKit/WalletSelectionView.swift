@@ -39,7 +39,7 @@ struct WalletSelectionView: View {
     @Environment(ViewModel.self) var viewModel
     
     var availableWallets: [String] {
-        viewModel.walletManager.availableWallets.map { $0.identifier }
+        viewModel.walletManager.availableWalletsMap.map { $0.value.identifier }
     }
     
     var body: some View {
@@ -63,7 +63,7 @@ struct WalletSelectionView: View {
     }
     
     private func handleWalletConnection(_ wallet: any Wallet.Type) async throws {
-        try await viewModel.walletManager.pair(wallet, for: viewModel.appId, cluster: viewModel.cluster)
+        try await viewModel.walletManager.pair(wallet)
         dismiss()
     }
 }

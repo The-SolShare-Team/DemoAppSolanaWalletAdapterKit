@@ -28,7 +28,11 @@ class ViewModel {
 
     init() {
         keychain = SimpleKeychain()
-        walletManager = WalletConnectionManager(storage: KeychainStorage(keychain))
+        walletManager = WalletConnectionManager(
+            appIdentity: appId,
+            cluster: cluster,
+            storage: KeychainStorage(keychain)
+        )
 
         Task { [weak self] in
             try await self?.walletManager.recoverWallets()

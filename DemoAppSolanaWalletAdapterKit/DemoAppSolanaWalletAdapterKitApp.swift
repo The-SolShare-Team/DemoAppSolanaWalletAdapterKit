@@ -18,10 +18,11 @@ struct DemoAppSolanaWalletAdapterKitApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .onOpenURL {
-                    if SolanaWalletAdapter.handleOnOpenURL($0) { return }
-                }
+//            ContentView()
+//                .onOpenURL {
+//                    if SolanaWalletAdapter.handleOnOpenURL($0) { return }
+//                }
+            EmptyView()
         }
     }
 }
